@@ -2,15 +2,9 @@ using UnityEngine;
 
 public class CharacterManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [HideInInspector] public Animator animator;
+    
+    [HideInInspector] public CharacterVariableManager characterVariableManager;
+    
+    
 }
