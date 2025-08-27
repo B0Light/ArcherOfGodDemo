@@ -152,8 +152,9 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
     
     #region Gizmos
     
-    private void OnDrawGizmosSelected()
+    protected override void OnDrawGizmosSelected()
     {
+        base.OnDrawGizmosSelected();
         Vector3 center = platformCenterTransform ? platformCenterTransform.position : Vector3.zero;
         Gizmos.color = Color.yellow;
         Vector3 size = new Vector3(platformSize, 0.1f, platformSize);

@@ -1,7 +1,18 @@
 using UnityEngine;
 
+public enum AnimationState
+{
+    Base,
+    Locomotion,
+    Jump,
+    Fall,
+    Dead,
+}
+
 public class CharacterLocomotionManager : MonoBehaviour
 {
+    [SerializeField] private AnimationState currentState = AnimationState.Base;
+    
     [Header("Movement Settings")]
     [SerializeField] private float walkSpeed = 2.5f;
     [SerializeField] private float runSpeed = 6f;
@@ -26,8 +37,9 @@ public class CharacterLocomotionManager : MonoBehaviour
     private Vector3 _velocity;
     private float _currentMaxSpeed;
     private float _speed2D;
-    private bool _isGrounded = true;
-    private bool _isJumping = false;
+    [SerializeField] private bool _isGrounded = true;
+    [SerializeField] private bool _isJumping = false;
+    private bool _canJump = false;
     
     // Animation hashes
     private readonly int _moveSpeedHash = Animator.StringToHash("MoveSpeed");
@@ -39,20 +51,163 @@ public class CharacterLocomotionManager : MonoBehaviour
         _characterManager = GetComponent<CharacterManager>();
     }
     
-    protected virtual void Start()
+    private void Start()
     {
         _currentMaxSpeed = runSpeed;
         canMove = true;
         canRotate = true;
 
         InputManager.Instance.jumpAction.AddListener(HandleJump);
+        SwitchState(AnimationState.Locomotion);
     }
     
     protected virtual void Update()
     {
+        switch (currentState)
+        {
+            case AnimationState.Locomotion:
+                UpdateLocomotionState();
+                break;
+            case AnimationState.Jump:
+                UpdateJumpState();
+                break;
+            case AnimationState.Fall:
+                UpdateFallState();
+                break;
+        }
+    }
+    
+    #region ControlState
+    private void SwitchState(AnimationState newState)
+    {
+        ExitCurrentState();
+        currentState = newState;
+        EnterState(newState);
+    }
+    
+    private void EnterState(AnimationState stateToEnter)
+    {
+        if(_characterManager.isDead.Value)
+        {
+            SwitchState(AnimationState.Dead);
+            return;
+        }
+
+        switch (currentState)
+        {
+            case AnimationState.Base:
+                break;
+            case AnimationState.Locomotion:
+                EnterLocomotionState();
+                break;
+            case AnimationState.Jump:
+                EnterJumpState();
+                break;
+            case AnimationState.Fall:
+                EnterFallState();
+                break;
+        }
+    }
+    #endregion
+    
+    private void EnterLocomotionState()
+    {
+        _canJump = true;
+    }
+    
+    private void UpdateLocomotionState()
+    {
+        GroundedCheck();
+
+        if (!_isGrounded)
+        {
+            SwitchState(AnimationState.Fall);
+        }
+
+        HandleMovement();
+        FaceMoveDirection();
+        Move();
+        UpdateAnimator();
+    }
+    
+    private void ExitLocomotionState()
+    {
+        _canJump = false;
+    }
+    
+    private void EnterJumpState()
+    {
+        if (_characterManager != null && _characterManager.animator != null)
+        {
+            _characterManager.animator.SetBool(_isJumpingHash, true);
+        }
+
+        _velocity.y = jumpForce;
+        _isJumping = true;
+    }
+    private void UpdateJumpState()
+    {
+        ApplyGravity();
+
+        if (_velocity.y <= 0f)
+        {
+            _characterManager.animator.SetBool(_isJumpingHash, false);
+            SwitchState(AnimationState.Fall);
+        }
+
         GroundedCheck();
         HandleMovement();
+        FaceMoveDirection();
+        Move();
         UpdateAnimator();
+    }
+    
+    private void ExitJumpState()
+    {
+        if (_characterManager != null && _characterManager.animator != null)
+        {
+            _characterManager.animator.SetBool(_isJumpingHash, false);
+        }
+    }
+    
+    private void EnterFallState()
+    {
+        _velocity.y = 0f;
+    }
+    
+    private void UpdateFallState()
+    {
+        GroundedCheck();
+
+        
+        HandleMovement();
+        FaceMoveDirection();
+        ApplyGravity();
+        Move();
+        UpdateAnimator();
+
+        if (_isGrounded)
+        {
+            SwitchState(AnimationState.Locomotion);
+        }
+    }
+
+    private void ExitFallState() { }
+
+    private void ExitCurrentState()
+    {
+        switch (currentState)
+        {
+            case AnimationState.Locomotion:
+                ExitLocomotionState();
+                break;
+            case AnimationState.Jump:
+                ExitJumpState();
+                break;
+            case AnimationState.Fall:
+                ExitFallState();
+                break;
+        }
     }
     
     #region Movement
@@ -87,8 +242,6 @@ public class CharacterLocomotionManager : MonoBehaviour
         {
             ApplyGravity();
         }
-        
-        Move();
     }
     
     private void Move()
@@ -115,26 +268,21 @@ public class CharacterLocomotionManager : MonoBehaviour
     
     private void HandleJump()
     {
-        if (!canMove || !_isGrounded) return;
+        if(!CanJump()) return;
         
-        if (!_isJumping)
+        if (_canJump && !_isJumping)
         {
-            Jump();
+            Debug.Log("Switch State : jump");
+            SwitchState(AnimationState.Jump);
         }
     }
-    
-    private void Jump()
+
+    private bool CanJump()
     {
-        if (!_isGrounded) return;
-        
-        _isJumping = true;
-        _velocity.y = jumpForce;
-        
-        // 애니메이터 업데이트
-        if (_characterManager != null && _characterManager.animator != null)
-        {
-            _characterManager.animator.SetBool(_isJumpingHash, true);
-        }
+        if (!canMove || !_isGrounded) return false;
+        if (_characterManager.isPerformingAction) return false;
+        if (currentState == AnimationState.Jump) return false;
+        return true;
     }
     
     private void ApplyGravity()
@@ -193,32 +341,22 @@ public class CharacterLocomotionManager : MonoBehaviour
         _currentMaxSpeed = Mathf.Lerp(0f, runSpeed, speed);
     }
 
-    public void PerformJump()
-    {
-        if (canMove && _isGrounded && !_isJumping)
-        {
-            Jump();
-        }
-    }
-
     public bool IsMoving()
     {
         return _speed2D > 0.1f;
     }
     
-
     public bool IsJumping()
     {
         return _isJumping;
     }
     
-
     public bool IsGrounded()
     {
         return _isGrounded;
     }
     
-    private void OnDrawGizmosSelected()
+    protected virtual void OnDrawGizmosSelected()
     {
         // 지면 체크 구체 표시
         Gizmos.color = _isGrounded ? Color.green : Color.red;
