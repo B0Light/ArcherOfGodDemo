@@ -268,6 +268,7 @@ GameObject:
   - component: {fileID: 349323836}
   - component: {fileID: 349323834}
   - component: {fileID: 349323837}
+  - component: {fileID: 349323838}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -293,13 +294,13 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 2
+  m_Height: 1.8
   m_Radius: 0.3
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!4 &349323835
 Transform:
   m_ObjectHideFlags: 0
@@ -355,7 +356,7 @@ MonoBehaviour:
   speedChangeDamping: 10
   rotationSmoothing: 10
   jumpForce: 8
-  gravityMultiplier: 2
+  gravity: -9.81
   groundedOffset: -0.14
   groundLayerMask:
     serializedVersion: 2
@@ -364,8 +365,24 @@ MonoBehaviour:
   canRotate: 1
   platformSize: 7
   boundaryBuffer: 0.01
+  platformCenterTransform: {fileID: 660982328}
+  platformY: 1
   playerHeight: 1.8
-  playerRadius: 0.5
+  playerRadius: 0.3
+--- !u!114 &349323838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349323833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b62d9b9cc2a0582489afe30052e441bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 0}
+  characterVariableManager: {fileID: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -642,6 +659,9 @@ MonoBehaviour:
   playerManager: {fileID: 0}
   moveComposite: {x: 0, y: 0}
   movementInputDetected: 0
+  jumpAction:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0

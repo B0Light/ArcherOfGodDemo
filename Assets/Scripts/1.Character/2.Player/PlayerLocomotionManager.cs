@@ -9,22 +9,14 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
     [SerializeField] private float platformY = 0f;
     
     [Header("Player Specific Settings")]
-    [SerializeField] private float playerHeight = 1.8f;
-    [SerializeField] private float playerRadius = 0.5f;
+    [SerializeField] private float playerRadius = 0.3f;
     
     private InputManager _inputManager;
-    private Vector3 _lastValidPosition;
     
     protected override void Awake()
     {
         base.Awake();
         _inputManager = InputManager.Instance;
-    }
-    
-    protected override void Start()
-    {
-        base.Start();
-        _lastValidPosition = transform.position;
     }
     
     protected override void Update()
@@ -73,7 +65,7 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         
         if (Mathf.Abs(localPos.x) >= halfSize - buffer)
         {
-            if (Mathf.Sign(localPos.x) == Mathf.Sign(direction.x))
+            if (Mathf.Approximately(Mathf.Sign(localPos.x),Mathf.Sign(direction.x)))
             {
                 clampedDirection.x = 0f;
             }
@@ -81,7 +73,7 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         
         if (Mathf.Abs(localPos.z) >= halfSize - buffer)
         {
-            if (Mathf.Sign(localPos.z) == Mathf.Sign(direction.z))
+            if (Mathf.Approximately(Mathf.Sign(localPos.z), Mathf.Sign(direction.z)))
             {
                 clampedDirection.z = 0f;
             }
@@ -123,12 +115,8 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
             Vector3 newWorldPos = center + clampedLocal;
             newWorldPos.y = platformY;
             transform.position = newWorldPos;
-            _lastValidPosition = newWorldPos;
         }
-        else
-        {
-            _lastValidPosition = currentPos;
-        }
+        
     }
     
     public bool IsPositionSafe(Vector3 position)

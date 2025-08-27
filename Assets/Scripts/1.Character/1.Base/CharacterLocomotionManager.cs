@@ -10,10 +10,10 @@ public class CharacterLocomotionManager : MonoBehaviour
     
     [Header("Jump Settings")]
     [SerializeField] private float jumpForce = 8f;
-    [SerializeField] private float gravityMultiplier = 2f;
+    [SerializeField] private float gravity = -9.81f;
     
     [Header("Ground Check")]
-    [SerializeField] private float groundedOffset = -0.14f;
+    [SerializeField] protected float groundedOffset = -0.14f;
     [SerializeField] private LayerMask groundLayerMask = 1;
     
     [Header("Control")]
@@ -139,9 +139,9 @@ public class CharacterLocomotionManager : MonoBehaviour
     
     private void ApplyGravity()
     {
-        if (_velocity.y > Physics.gravity.y)
+        if (_velocity.y > gravity)
         {
-            _velocity.y += Physics.gravity.y * gravityMultiplier * Time.deltaTime;
+            _velocity.y += gravity * Time.deltaTime;
         }
     }
     
@@ -180,40 +180,19 @@ public class CharacterLocomotionManager : MonoBehaviour
     }
     
     #endregion
+
     
-    #region Public Methods
-    
-    /// <summary>
-    /// 이동 방향을 설정합니다.
-    /// </summary>
-    /// <param name="direction">정규화된 이동 방향 벡터</param>
     public void SetMoveDirection(Vector3 direction)
     {
         _moveDirection = direction.normalized;
     }
     
-    /// <summary>
-    /// 현재 이동 속도를 설정합니다.
-    /// </summary>
-    /// <param name="speed">속도 (0 = 정지, 1 = 달리기)</param>
     public void SetMovementSpeed(float speed)
     {
         speed = Mathf.Clamp01(speed);
         _currentMaxSpeed = Mathf.Lerp(0f, runSpeed, speed);
     }
-    
-    /// <summary>
-    /// 걷기/달리기 모드를 전환합니다.
-    /// </summary>
-    /// <param name="isWalking">true = 걷기, false = 달리기</param>
-    public void SetWalkMode(bool isWalking)
-    {
-        _currentMaxSpeed = isWalking ? walkSpeed : runSpeed;
-    }
-    
-    /// <summary>
-    /// 점프를 수행합니다.
-    /// </summary>
+
     public void PerformJump()
     {
         if (canMove && _isGrounded && !_isJumping)
@@ -221,34 +200,23 @@ public class CharacterLocomotionManager : MonoBehaviour
             Jump();
         }
     }
-    
-    /// <summary>
-    /// 현재 이동 상태를 반환합니다.
-    /// </summary>
+
     public bool IsMoving()
     {
         return _speed2D > 0.1f;
     }
     
-    /// <summary>
-    /// 현재 점프 상태를 반환합니다.
-    /// </summary>
+
     public bool IsJumping()
     {
         return _isJumping;
     }
     
-    /// <summary>
-    /// 현재 지면 접촉 상태를 반환합니다.
-    /// </summary>
+
     public bool IsGrounded()
     {
         return _isGrounded;
     }
-    
-    #endregion
-    
-    #region Gizmos
     
     private void OnDrawGizmosSelected()
     {
@@ -257,6 +225,5 @@ public class CharacterLocomotionManager : MonoBehaviour
         Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - groundedOffset, transform.position.z);
         Gizmos.DrawWireSphere(spherePosition, 0.2f);
     }
-    
-    #endregion
+
 }
