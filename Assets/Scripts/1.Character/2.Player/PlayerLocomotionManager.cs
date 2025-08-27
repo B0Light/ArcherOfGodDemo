@@ -1,17 +1,7 @@
 using UnityEngine;
 
 public class PlayerLocomotionManager : CharacterLocomotionManager
-{
-    [Header("Platform Boundaries")]
-    [SerializeField] private float platformSize = 7f;
-    [SerializeField] private float boundaryBuffer = 0.5f;
-    [SerializeField] private Transform platformCenterTransform;
-    [SerializeField] private float platformY = 0f;
-    
-    [Header("Player Specific Settings")]
-    [SerializeField] private float playerRadius = 0.3f;
-    
-    
+{ 
     private InputManager _inputManager;
     
     protected override void Awake()
@@ -25,8 +15,6 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         HandlePlayerInput();
         
         base.Update();
-        
-        CheckPlatformBoundaries();
     }
     
     private void HandlePlayerInput()
@@ -54,123 +42,4 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         
         return moveDirection.normalized;
     }
-    
-    private Vector3 ClampDirectionToPlatform(Vector3 direction)
-    {
-        Vector3 center = platformCenterTransform ? platformCenterTransform.position : Vector3.zero;
-        Vector3 localPos = transform.position - center;
-        float halfSize = platformSize * 0.5f;
-        float buffer = boundaryBuffer + playerRadius;
-        
-        Vector3 clampedDirection = direction;
-        
-        if (Mathf.Abs(localPos.x) >= halfSize - buffer)
-        {
-            if (Mathf.Approximately(Mathf.Sign(localPos.x),Mathf.Sign(direction.x)))
-            {
-                clampedDirection.x = 0f;
-            }
-        }
-        
-        if (Mathf.Abs(localPos.z) >= halfSize - buffer)
-        {
-            if (Mathf.Approximately(Mathf.Sign(localPos.z), Mathf.Sign(direction.z)))
-            {
-                clampedDirection.z = 0f;
-            }
-        }
-        
-        return clampedDirection.normalized;
-    }
-    
-    private void CheckPlatformBoundaries()
-    {
-        Vector3 center = platformCenterTransform ? platformCenterTransform.position : Vector3.zero;
-        Vector3 currentPos = transform.position;
-        Vector3 localPos = currentPos - center;
-        float halfSize = platformSize * 0.5f;
-        float buffer = boundaryBuffer + playerRadius;
-        
-        bool positionChanged = false;
-        Vector3 clampedLocal = localPos;
-        
-        if (Mathf.Abs(localPos.x) > halfSize - buffer)
-        {
-            clampedLocal.x = Mathf.Sign(localPos.x) * (halfSize - buffer);
-            positionChanged = true;
-        }
-        
-        if (Mathf.Abs(localPos.z) > halfSize - buffer)
-        {
-            clampedLocal.z = Mathf.Sign(localPos.z) * (halfSize - buffer);
-            positionChanged = true;
-        }
-        
-        if (!Mathf.Approximately(currentPos.y, platformY))
-        {
-            positionChanged = true;
-        }
-        
-        if (positionChanged)
-        {
-            Vector3 newWorldPos = center + clampedLocal;
-            newWorldPos.y = platformY;
-            transform.position = newWorldPos;
-        }
-        
-    }
-    
-    
-    
-    public bool IsPositionSafe(Vector3 position)
-    {
-        Vector3 center = platformCenterTransform ? platformCenterTransform.position : Vector3.zero;
-        Vector3 local = position - center;
-        float halfSize = platformSize * 0.5f;
-        float buffer = boundaryBuffer + playerRadius;
-        
-        return Mathf.Abs(local.x) <= halfSize - buffer && 
-               Mathf.Abs(local.z) <= halfSize - buffer;
-    }
-    
-    public Vector3 GetSafePosition(Vector3 targetPosition)
-    {
-        Vector3 center = platformCenterTransform ? platformCenterTransform.position : Vector3.zero;
-        Vector3 local = targetPosition - center;
-        float halfSize = platformSize * 0.5f;
-        float buffer = boundaryBuffer + playerRadius;
-        
-        local.x = Mathf.Clamp(local.x, -halfSize + buffer, halfSize - buffer);
-        local.z = Mathf.Clamp(local.z, -halfSize + buffer, halfSize - buffer);
-        
-        Vector3 safeWorld = center + local;
-        safeWorld.y = platformY;
-        return safeWorld;
-    }
-    
-    public (float size, float boundary) GetPlatformInfo()
-    {
-        return (platformSize, boundaryBuffer);
-    }
-    
-    #region Gizmos
-    
-    protected override void OnDrawGizmosSelected()
-    {
-        base.OnDrawGizmosSelected();
-        Vector3 center = platformCenterTransform ? platformCenterTransform.position : Vector3.zero;
-        Gizmos.color = Color.yellow;
-        Vector3 size = new Vector3(platformSize, 0.1f, platformSize);
-        Gizmos.DrawWireCube(center, size);
-        
-        Gizmos.color = Color.green;
-        float safeSize = platformSize - (boundaryBuffer + playerRadius) * 2f;
-        Vector3 safeSize3D = new Vector3(safeSize, 0.1f, safeSize);
-        Gizmos.DrawWireCube(center, safeSize3D);
-        
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, playerRadius);
-    }
-    
-    #endregion
 }

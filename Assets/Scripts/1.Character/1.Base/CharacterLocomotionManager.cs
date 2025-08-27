@@ -24,7 +24,7 @@ public class CharacterLocomotionManager : MonoBehaviour
     [SerializeField] private float gravity = -9.81f;
     
     [Header("Ground Check")]
-    [SerializeField] protected float groundedOffset = -0.14f;
+    [SerializeField] protected float groundedOffset = 0f;
     [SerializeField] private LayerMask groundLayerMask = 1;
     
     [Header("Control")]
@@ -37,14 +37,23 @@ public class CharacterLocomotionManager : MonoBehaviour
     [SerializeField] private Vector3 idleFacingDirection = Vector3.forward; // 타겟이 없으면 이 월드 방향
     [SerializeField] private float idleRotationSmoothing = 10f;
     
+    [Header("Platform Boundaries")]
+    [SerializeField] private float platformSize = 7f;
+    [SerializeField] private float boundaryBuffer = 0.5f;
+    [SerializeField] private Transform platformCenterTransform;
+    [SerializeField] private float platformY = 0f;
+    
+    [Header("Player Specific Settings")]
+    [SerializeField] private float playerRadius = 0.3f;
+    
     // Private variables
     private CharacterManager _characterManager;
     private Vector3 _moveDirection;
     private Vector3 _velocity;
     private float _currentMaxSpeed;
     private float _speed2D;
-    [SerializeField] private bool _isGrounded = true;
-    [SerializeField] private bool _isJumping = false;
+    private bool _isGrounded = true;
+    private bool _isJumping = false;
     private bool _canJump = false;
     
     // Animation hashes
@@ -81,6 +90,8 @@ public class CharacterLocomotionManager : MonoBehaviour
                 UpdateFallState();
                 break;
         }
+        
+        CheckPlatformBoundaries();
     }
     
     #region ControlState
@@ -385,6 +396,76 @@ public class CharacterLocomotionManager : MonoBehaviour
     {
         return _isGrounded;
     }
+
+    #region Platform
+
+    protected Vector3 ClampDirectionToPlatform(Vector3 direction)
+    {
+        Vector3 center = platformCenterTransform ? platformCenterTransform.position : Vector3.zero;
+        Vector3 localPos = transform.position - center;
+        float halfSize = platformSize * 0.5f;
+        float buffer = boundaryBuffer + playerRadius;
+        
+        Vector3 clampedDirection = direction;
+        
+        if (Mathf.Abs(localPos.x) >= halfSize - buffer)
+        {
+            if (Mathf.Approximately(Mathf.Sign(localPos.x),Mathf.Sign(direction.x)))
+            {
+                clampedDirection.x = 0f;
+            }
+        }
+        
+        if (Mathf.Abs(localPos.z) >= halfSize - buffer)
+        {
+            if (Mathf.Approximately(Mathf.Sign(localPos.z), Mathf.Sign(direction.z)))
+            {
+                clampedDirection.z = 0f;
+            }
+        }
+        
+        return clampedDirection.normalized;
+    }
+    protected void CheckPlatformBoundaries()
+    {
+        Vector3 center = platformCenterTransform ? platformCenterTransform.position : Vector3.zero;
+        Vector3 currentPos = transform.position;
+        Vector3 localPos = currentPos - center;
+        float halfSize = platformSize * 0.5f;
+        float buffer = boundaryBuffer + playerRadius;
+        
+        bool positionChanged = false;
+        Vector3 clampedLocal = localPos;
+        
+        if (Mathf.Abs(localPos.x) > halfSize - buffer)
+        {
+            clampedLocal.x = Mathf.Sign(localPos.x) * (halfSize - buffer);
+            positionChanged = true;
+        }
+        
+        if (Mathf.Abs(localPos.z) > halfSize - buffer)
+        {
+            clampedLocal.z = Mathf.Sign(localPos.z) * (halfSize - buffer);
+            positionChanged = true;
+        }
+        
+        if (!Mathf.Approximately(currentPos.y, platformY))
+        {
+            positionChanged = true;
+        }
+        
+        if (positionChanged)
+        {
+            Vector3 newWorldPos = center + clampedLocal;
+            newWorldPos.y = platformY;
+            transform.position = newWorldPos;
+        }
+        
+    }
+
+    #endregion
+    
+    
     
     protected virtual void OnDrawGizmosSelected()
     {
@@ -392,6 +473,19 @@ public class CharacterLocomotionManager : MonoBehaviour
         Gizmos.color = _isGrounded ? Color.green : Color.red;
         Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - groundedOffset, transform.position.z);
         Gizmos.DrawWireSphere(spherePosition, 0.2f);
+        
+        Vector3 center = platformCenterTransform ? platformCenterTransform.position : Vector3.zero;
+        Gizmos.color = Color.yellow;
+        Vector3 size = new Vector3(platformSize, 0.1f, platformSize);
+        Gizmos.DrawWireCube(center, size);
+        
+        Gizmos.color = Color.green;
+        float safeSize = platformSize - (boundaryBuffer + playerRadius) * 2f;
+        Vector3 safeSize3D = new Vector3(safeSize, 0.1f, safeSize);
+        Gizmos.DrawWireCube(center, safeSize3D);
+        
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, playerRadius);
     }
 
 }
