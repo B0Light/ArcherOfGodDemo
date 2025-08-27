@@ -31,6 +31,12 @@ public class CharacterLocomotionManager : MonoBehaviour
     public bool canMove = true;
     public bool canRotate = true;
     
+    [Header("Idle Facing")] 
+    [SerializeField] private bool faceWhenIdle = true;
+    [SerializeField] private Transform idleLookTarget; // 설정 시 이 타겟을 바라봄
+    [SerializeField] private Vector3 idleFacingDirection = Vector3.forward; // 타겟이 없으면 이 월드 방향
+    [SerializeField] private float idleRotationSmoothing = 10f;
+    
     // Private variables
     private CharacterManager _characterManager;
     private Vector3 _moveDirection;
@@ -126,6 +132,7 @@ public class CharacterLocomotionManager : MonoBehaviour
 
         HandleMovement();
         FaceMoveDirection();
+        FaceIdleDirection();
         Move();
         UpdateAnimator();
     }
@@ -260,6 +267,29 @@ public class CharacterLocomotionManager : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(_moveDirection);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSmoothing * Time.deltaTime);
         }
+    }
+    
+    private void FaceIdleDirection()
+    {
+        if (!faceWhenIdle) return;
+        if (!canRotate) return;
+        if (IsMoving()) return;
+
+        Vector3 targetDirection;
+        if (idleLookTarget != null)
+        {
+            targetDirection = idleLookTarget.position - transform.position;
+            targetDirection.y = 0f;
+        }
+        else
+        {
+            targetDirection = new Vector3(idleFacingDirection.x, 0f, idleFacingDirection.z);
+        }
+
+        if (targetDirection.sqrMagnitude < 0.0001f) return;
+
+        Quaternion targetRotation = Quaternion.LookRotation(targetDirection.normalized, Vector3.up);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, idleRotationSmoothing * Time.deltaTime);
     }
     
     #endregion

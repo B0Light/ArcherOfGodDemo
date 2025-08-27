@@ -11,6 +11,7 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
     [Header("Player Specific Settings")]
     [SerializeField] private float playerRadius = 0.3f;
     
+    
     private InputManager _inputManager;
     
     protected override void Awake()
@@ -118,6 +119,8 @@ public class PlayerLocomotionManager : CharacterLocomotionManager
         }
         
     }
+    
+    
     
     public bool IsPositionSafe(Vector3 position)
     {
