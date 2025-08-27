@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public enum AnimationState
 {
@@ -14,7 +15,7 @@ public class CharacterLocomotionManager : MonoBehaviour
     [SerializeField] private AnimationState currentState = AnimationState.Base;
     
     [Header("Movement Settings")]
-    [SerializeField] private float walkSpeed = 2.5f;
+    //[SerializeField] private float walkSpeed = 2.5f;
     [SerializeField] private float runSpeed = 6f;
     [SerializeField] private float speedChangeDamping = 10f;
     [SerializeField] private float rotationSmoothing = 10f;
@@ -60,6 +61,9 @@ public class CharacterLocomotionManager : MonoBehaviour
     private readonly int _moveSpeedHash = Animator.StringToHash("MoveSpeed");
     private readonly int _isJumpingHash = Animator.StringToHash("IsJumping");
     private readonly int _isGroundedHash = Animator.StringToHash("IsGrounded");
+
+    public UnityEvent onMove;
+    public UnityEvent onStop;
     
     protected virtual void Awake()
     {
@@ -196,8 +200,6 @@ public class CharacterLocomotionManager : MonoBehaviour
     private void UpdateFallState()
     {
         GroundedCheck();
-
-        
         HandleMovement();
         FaceMoveDirection();
         ApplyGravity();
@@ -247,6 +249,8 @@ public class CharacterLocomotionManager : MonoBehaviour
             {
                 FaceMoveDirection();
             }
+
+            onMove?.Invoke();
         }
         else
         {
@@ -254,6 +258,7 @@ public class CharacterLocomotionManager : MonoBehaviour
             _velocity.x = Mathf.Lerp(_velocity.x, 0f, speedChangeDamping * Time.deltaTime);
             _velocity.z = Mathf.Lerp(_velocity.z, 0f, speedChangeDamping * Time.deltaTime);
             _speed2D = 0f;
+            onStop?.Invoke();
         }
         
         if (!_isGrounded)

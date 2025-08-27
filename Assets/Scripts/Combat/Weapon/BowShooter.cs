@@ -8,8 +8,6 @@ public class BowShooter : MonoBehaviour
 
     [Header("Shooting")]
     [SerializeField] private float launchAngle = 45f; // 발사 각도 (도 단위)
-   
-    
 
     public void Shoot()
     {
@@ -49,5 +47,10 @@ public class BowShooter : MonoBehaviour
 
         float angleBetweenObjects = Vector3.SignedAngle(Vector3.forward, (planarTarget - planarStart).normalized, Vector3.up);
         return Quaternion.AngleAxis(angleBetweenObjects, Vector3.up) * velocity;
+    }
+
+    public void SetTarget(Transform newTarget)
+    {
+        target = newTarget;
     }
 }

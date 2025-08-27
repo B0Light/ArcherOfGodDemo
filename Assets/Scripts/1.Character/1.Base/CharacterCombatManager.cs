@@ -1,25 +1,41 @@
-using System;
+using System.Collections;
 using UnityEngine;
 
 public class CharacterCombatManager : MonoBehaviour
 {
     private CharacterManager _characterManager;
-    
+
     [SerializeField] private BowShooter bowShooter;
-    [SerializeField] private float fireRate = 1f;
-    private float _nextFireTime;
+    [SerializeField] private float fireRate = 3f;
 
     private void Awake()
     {
         _characterManager = GetComponent<CharacterManager>();
     }
 
-    private void Update()
+    private void Start()
     {
-        if (_characterManager.CanAttack() && Time.time >= _nextFireTime)
+        StartCoroutine(AutoShootCoroutine());
+    }
+
+    private IEnumerator AutoShootCoroutine()
+    {
+        while (true)
         {
-            bowShooter.Shoot();
-            _nextFireTime = Time.time + 1f / Mathf.Max(0.01f, fireRate);
+            if (_characterManager.CanAttack())
+            {
+                ShootArrow();
+                yield return new WaitForSeconds(1f / Mathf.Max(0.01f, fireRate));
+            }
+            else
+            {
+                yield return null;
+            }
         }
+    }
+
+    public void ShootArrow()
+    {
+        bowShooter.Shoot();
     }
 }
