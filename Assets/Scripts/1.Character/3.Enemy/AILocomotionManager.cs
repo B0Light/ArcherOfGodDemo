@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyLocomotionManager : CharacterLocomotionManager
+public class AILocomotionManager : CharacterLocomotionManager
 {
     [Header("Dodge Settings")]
     [SerializeField] private float detectionRadius = 12f;

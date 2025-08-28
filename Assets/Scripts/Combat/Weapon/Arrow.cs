@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Arrow : MonoBehaviour
+public class Arrow : MonoBehaviour, IPoolGameObject
 {
     [Header("Arrow Settings")]
     [SerializeField] private float baseSpeed = 40f;
@@ -115,6 +115,11 @@ public class Arrow : MonoBehaviour
             if (Physics.Raycast(transform.position - moveDir * 0.1f, moveDir, out hit, castDistance + 0.2f, ~0, QueryTriggerInteraction.Ignore))
             {
                 StuckArrowDecal decal = StuckArrowDecalPool.Instance.Get();
+                if (decal == null)
+                {
+                    Despawn();
+                    return;
+                }
                 bool hitIsGround = (groundLayer.value & (1 << hit.collider.gameObject.layer)) != 0;
                 Vector3 forwardForDecal = hitIsGround ? Vector3.down : moveDir;
                 decal.SetFromHit(hit, forwardForDecal);
@@ -124,6 +129,11 @@ public class Arrow : MonoBehaviour
             else
             {
                 StuckArrowDecal decal = StuckArrowDecalPool.Instance.Get();
+                if (decal == null)
+                {
+                    Despawn();
+                    return;
+                }
                 bool otherIsGround = (groundLayer.value & (1 << other.gameObject.layer)) != 0;
                 if (otherIsGround)
                 {
@@ -158,5 +168,19 @@ public class Arrow : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+    }
+
+    // IPoolGameObject 구현
+    public UnityEngine.Pool.IObjectPool<GameObject> Pool { get; set; }
+    public void Pool_Release(GameObject gameObject)
+    {
+        if (gameObject != null)
+        {
+            gameObject.SetActive(false);
+        }
+    }
+    public GameObject Pool_Get()
+    {
+        return gameObject;
     }
 }

@@ -479,7 +479,17 @@ public class CharacterLocomotionManager : MonoBehaviour
 
     #endregion
     
+    public float GetDistanceFromPlatformCenter()
+    {
+        Vector3 center = platformCenterTransform ? platformCenterTransform.position : Vector3.zero;
+        return Vector3.Distance(transform.position, center);
+    }
     
+    public Vector3 GetOffsetFromPlatformCenter()
+    {
+        Vector3 center = platformCenterTransform ? platformCenterTransform.position : Vector3.zero;
+        return transform.position - center;
+    }
     
     protected virtual void OnDrawGizmosSelected()
     {

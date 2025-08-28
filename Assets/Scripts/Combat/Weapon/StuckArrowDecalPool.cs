@@ -1,53 +1,25 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-public class StuckArrowDecalPool : Singleton<StuckArrowDecalPool>
+public class StuckArrowDecalPool : Pool<StuckArrowDecal, StuckArrowDecalPool>
 {
-    [SerializeField] private GameObject prefab;
-    [SerializeField] private int initialPoolSize = 10;
-    
-    private Queue<StuckArrowDecal> _pool = new Queue<StuckArrowDecal>();
-
-    protected override void Awake()
+    protected override StuckArrowDecal CreateNew()
     {
-        base.Awake();
-        
-        for (int i = 0; i < initialPoolSize; i++)
-        {
-            StuckArrowDecal decal = CreateNewDecal();
-            _pool.Enqueue(decal);
-        }
+        var instance = base.CreateNew();
+        return instance;
     }
 
-    private StuckArrowDecal CreateNewDecal()
+    public override StuckArrowDecal Get()
     {
-        GameObject obj = Instantiate(prefab, transform);
-        obj.SetActive(false);
-        StuckArrowDecal decal = obj.GetComponent<StuckArrowDecal>();
-        return decal;
-    }
-
-    public StuckArrowDecal Get()
-    {
-        if (_pool.Count > 0)
+        if (prefab == null)
         {
-            StuckArrowDecal decal = _pool.Dequeue();
-            decal.gameObject.SetActive(true);
-            return decal;
+            Debug.LogError("[StuckArrowDecalPool] Prefab이 설정되지 않았습니다.");
+            return null;
         }
-        else
+        var item = base.Get();
+        if (item != null)
         {
-            // 풀이 부족하면 새로 생성
-            StuckArrowDecal newDecal = CreateNewDecal();
-            newDecal.gameObject.SetActive(true);
-            return newDecal;
+            item.gameObject.SetActive(true);
         }
-    }
-
-    public void Return(StuckArrowDecal decal)
-    {
-        decal.gameObject.SetActive(false);
-        decal.transform.SetParent(transform);
-        _pool.Enqueue(decal);
+        return item;
     }
 }

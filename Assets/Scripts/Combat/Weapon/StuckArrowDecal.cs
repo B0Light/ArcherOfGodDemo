@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class StuckArrowDecal : MonoBehaviour
+public class StuckArrowDecal : MonoBehaviour, IPoolGameObject
 {
     [SerializeField] private float stickTime = 2f; // 잔상 효과 지속 시간
 
@@ -34,5 +34,19 @@ public class StuckArrowDecal : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+    }
+
+    // IPoolGameObject 구현
+    public UnityEngine.Pool.IObjectPool<GameObject> Pool { get; set; }
+    public void Pool_Release(GameObject gameObject)
+    {
+        if (gameObject != null)
+        {
+            gameObject.SetActive(false);
+        }
+    }
+    public GameObject Pool_Get()
+    {
+        return gameObject;
     }
 }

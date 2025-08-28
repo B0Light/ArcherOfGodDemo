@@ -96,8 +96,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3202030134895662856}
   - component: {fileID: 8427849459683332335}
-  - component: {fileID: 2963015423047742488}
   - component: {fileID: 5882176811917010063}
+  - component: {fileID: 2963015423047742488}
   - component: {fileID: 6016138026787985152}
   m_Layer: 9
   m_Name: Arrow_01
@@ -149,26 +149,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2963015423047742488
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8490236891847283941}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9611e594a7172946ba62f326b4e2ce7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  baseSpeed: 40
-  lifeTime: 6
-  targetLayer:
-    serializedVersion: 2
-    m_Bits: 129
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 1
 --- !u!135 &5882176811917010063
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -190,6 +170,26 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 1.2}
+--- !u!114 &2963015423047742488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8490236891847283941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9611e594a7172946ba62f326b4e2ce7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseSpeed: 40
+  lifeTime: 6
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 129
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!114 &6016138026787985152
 MonoBehaviour:
   m_ObjectHideFlags: 0
