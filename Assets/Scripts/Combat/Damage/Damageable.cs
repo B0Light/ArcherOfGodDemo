@@ -7,19 +7,19 @@ namespace bkTools.Combat
 	[AddComponentMenu("bkTools/Damage/Damageable")] 
 	public class Damageable : MonoBehaviour, IDamageable
 	{
-		[Header("스탯 연결")]
+		[Header("Stats")]
 		[SerializeField] private Stats stats;
 		[SerializeField] private string healthStatId = "Health";
 		[SerializeField] private bool createIfMissing = true;
 		[SerializeField] private float defaultMax = 100f;
 		[SerializeField] private float defaultStart = 100f;
 
-		[Header("넉백 설정(선택)")]
+		[Header("Knockback")]
 		[SerializeField] private bool applyKnockback = false;
 		[SerializeField] private float knockbackForce = 5f;
 		[SerializeField] private ForceMode knockbackForceMode = ForceMode.Impulse;
 
-		[Header("이벤트")]
+		[Header("Event")]
 		public UnityEvent<float> OnHealthChanged = new();
 		public UnityEvent<float> OnDamaged = new();
 		public UnityEvent OnDeath = new();

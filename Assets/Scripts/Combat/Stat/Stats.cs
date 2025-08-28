@@ -7,6 +7,7 @@ namespace bkTools
 	[DisallowMultipleComponent]
 	public class Stats : MonoBehaviour
 	{
+		[SerializeField] private List<StatSO> statDefinitions = new();
 		[SerializeField] private List<Stat> stats = new();
 
 		readonly Dictionary<string, Stat> idToStat = new();
@@ -14,7 +15,7 @@ namespace bkTools
 
 		void Awake()
 		{
-			BuildIndex();
+			RebuildFromDefinitions();
 		}
 
 		void Update()
@@ -38,6 +39,16 @@ namespace bkTools
 		{
 			if (!initialized) BuildIndex();
 			if (idToStat.TryGetValue(id, out var stat)) return stat;
+			// 우선 정의에서 찾기
+			var def = statDefinitions.Find(s => s != null && s.Id == id);
+			if (def != null)
+			{
+				var createdFromDef = def.CreateRuntimeInstance();
+				stats.Add(createdFromDef);
+				idToStat[id] = createdFromDef;
+				return createdFromDef;
+			}
+			// 정의가 없으면 이전 방식 호환
 			var created = new Stat();
 			created.Initialize(id, min, max, start, regenPerSecond);
 			stats.Add(created);
@@ -82,6 +93,19 @@ namespace bkTools
 				idToStat[s.Id] = s;
 			}
 			initialized = true;
+		}
+
+		public void RebuildFromDefinitions()
+		{
+			stats.Clear();
+			for (int i = 0; i < statDefinitions.Count; i++)
+			{
+				var def = statDefinitions[i];
+				if (def == null) continue;
+				stats.Add(def.CreateRuntimeInstance());
+			}
+			initialized = false;
+			BuildIndex();
 		}
 	}
 }
