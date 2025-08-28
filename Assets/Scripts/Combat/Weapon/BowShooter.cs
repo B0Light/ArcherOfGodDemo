@@ -9,6 +9,7 @@ public class BowShooter : MonoBehaviour
     [Header("Shooting")]
     [SerializeField] private float launchAngle = 45f; // 발사 각도 (도 단위)
 
+    /* Animation Event */
     public void Shoot()
     {
         if (ArrowPool.Instance == null || target == null) return;

@@ -54,7 +54,7 @@ public class CharacterManager : MonoBehaviour
     private void ShootTrigger()
     {
         playableDirector.Play();
-        characterCombatManager.ShootArrow();
+        
     }
 
     private void CloseTrigger()

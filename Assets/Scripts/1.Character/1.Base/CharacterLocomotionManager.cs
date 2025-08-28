@@ -53,6 +53,7 @@ public class CharacterLocomotionManager : MonoBehaviour
     private Vector3 _velocity;
     private float _currentMaxSpeed;
     private float _speed2D;
+    private bool _wasMoving = false;
     private bool _isGrounded = true;
     private bool _isJumping = false;
     private bool _canJump = false;
@@ -249,8 +250,6 @@ public class CharacterLocomotionManager : MonoBehaviour
             {
                 FaceMoveDirection();
             }
-
-            onMove?.Invoke();
         }
         else
         {
@@ -258,13 +257,23 @@ public class CharacterLocomotionManager : MonoBehaviour
             _velocity.x = Mathf.Lerp(_velocity.x, 0f, speedChangeDamping * Time.deltaTime);
             _velocity.z = Mathf.Lerp(_velocity.z, 0f, speedChangeDamping * Time.deltaTime);
             _speed2D = 0f;
-            onStop?.Invoke();
         }
         
         if (!_isGrounded)
         {
             ApplyGravity();
         }
+
+        bool isMovingNow = _speed2D > 0.1f;
+        if (isMovingNow && !_wasMoving)
+        {
+            onMove?.Invoke();
+        }
+        else if (!isMovingNow && _wasMoving)
+        {
+            onStop?.Invoke();
+        }
+        _wasMoving = isMovingNow;
     }
     
     private void Move()
