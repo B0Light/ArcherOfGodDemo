@@ -14,7 +14,15 @@ public class Arrow : MonoBehaviour
     private float _despawnTime;
     private bool _stuck = false;
     
+    // Telemetry for AI
+    private Transform _intendedTarget;
+    private Vector3 _intendedTargetPosition;
+    private Vector3 _fireOrigin;
+    
     public float BaseSpeed => baseSpeed;
+    public Transform IntendedTarget => _intendedTarget;
+    public Vector3 IntendedTargetPosition => _intendedTargetPosition;
+    public Vector3 FireOrigin => _fireOrigin;
 
     private void Awake()
     {
@@ -55,7 +63,15 @@ public class Arrow : MonoBehaviour
         }
     }
 
-    public void Launch(Vector3 direction, float extraSpeed)
+    public void Launch(Vector3 direction, float extraSpeed, Transform intendedTarget, Vector3 intendedTargetPosition, Vector3 fireOrigin)
+    {
+        Launch(direction, extraSpeed);
+        _intendedTarget = intendedTarget;
+        _intendedTargetPosition = intendedTargetPosition;
+        _fireOrigin = fireOrigin;
+    }
+    
+    private void Launch(Vector3 direction, float extraSpeed)
     {
         _pool = ArrowPool.Instance;
         float speed = baseSpeed + extraSpeed;
@@ -67,6 +83,11 @@ public class Arrow : MonoBehaviour
             _rb.linearVelocity = direction.normalized * speed;
             _rb.angularVelocity = Vector3.zero;
         }
+
+        // reset telemetry when using legacy launch
+        _intendedTarget = null;
+        _intendedTargetPosition = Vector3.zero;
+        _fireOrigin = transform.position;
     }
 
     private void OnTriggerEnter(Collider other)

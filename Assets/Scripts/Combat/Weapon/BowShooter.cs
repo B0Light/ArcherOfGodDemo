@@ -25,7 +25,13 @@ public class BowShooter : MonoBehaviour
         Vector3 velocity = CalculateParabolaVelocity(target.position, firePoint.position, launchAngle);
 
         arrow.gameObject.SetActive(true);
-        arrow.Launch(velocity.normalized, velocity.magnitude - arrow.BaseSpeed);
+        arrow.Launch(
+            velocity.normalized,
+            velocity.magnitude - arrow.BaseSpeed,
+            target,
+            target.position,
+            firePoint.position
+        );
     }
 
     private Vector3 CalculateParabolaVelocity(Vector3 targetPos, Vector3 startPos, float angle)

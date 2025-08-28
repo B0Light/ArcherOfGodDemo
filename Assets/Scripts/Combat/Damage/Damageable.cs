@@ -20,9 +20,9 @@ namespace bkTools.Combat
 		[SerializeField] private ForceMode knockbackForceMode = ForceMode.Impulse;
 
 		[Header("Event")]
-		public UnityEvent<float> OnHealthChanged = new();
-		public UnityEvent<float> OnDamaged = new();
-		public UnityEvent OnDeath = new();
+		[HideInInspector] public UnityEvent<float> OnHealthChanged = new();
+		[HideInInspector] public UnityEvent<float> OnDamaged = new();
+		[HideInInspector] public UnityEvent OnDeath = new();
 
 		private Stat cachedHealth;
 
