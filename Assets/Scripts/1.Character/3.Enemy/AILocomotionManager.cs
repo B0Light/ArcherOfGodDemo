@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AILocomotionManager : CharacterLocomotionManager
@@ -8,12 +9,15 @@ public class AILocomotionManager : CharacterLocomotionManager
     [SerializeField] private float minSeparationDistance = 1.0f;
     [SerializeField] private float dodgeDuration = 0.4f;
     [SerializeField] private float dodgeSpeed = 0.9f; // 0~1 비율
+    [SerializeField] private float rapidAttackChance = 0.25f;
     [SerializeField] private float postDodgeCooldown = 2f;
 
     private bool _dodging;
     private float _dodgeEndTime;
     private float _cooldownEndTime;
     private Vector3 _currentDodgeDir;
+
+    private int _extraAttack = 1;
 
     protected override void Update()
     {
@@ -34,7 +38,9 @@ public class AILocomotionManager : CharacterLocomotionManager
                 return;
             }
             _dodging = false;
-            _cooldownEndTime = Time.time + postDodgeCooldown;
+            _extraAttack = 1;
+            if (Random.value < rapidAttackChance) _extraAttack = 2;
+            _cooldownEndTime = Time.time + postDodgeCooldown * _extraAttack;
         }
 
         // 쿨다운 동안 정지
@@ -65,22 +71,23 @@ public class AILocomotionManager : CharacterLocomotionManager
     private bool TryComputeDodge(out Vector3 dodgeDir)
     {
         dodgeDir = Vector3.zero;
-        Arrow[] arrows = FindObjectsByType<Arrow>(FindObjectsSortMode.None);
-        if (arrows == null || arrows.Length == 0) return false;
+
+        List<Arrow> arrowList = ArrowPool.Instance.GetInstanceList();
+        if (arrowList == null || arrowList.Count == 0) return false;
 
         float bestScore = float.NegativeInfinity;
         Vector3 bestDodge = Vector3.zero;
 
-        Vector3 myPos = transform.position;
+        Vector3 myPos = transform.position + Vector3.up;
         Vector3 myPos2D = new Vector3(myPos.x, 0f, myPos.z);
 
-        foreach (Arrow a in arrows)
+        foreach (Arrow arrow in arrowList)
         {
-            if (a == null || !a.gameObject.activeInHierarchy || a.IntendedTarget.gameObject != this.gameObject) continue;
+            if (arrow == null || !arrow.gameObject.activeInHierarchy || arrow.IntendedTarget.gameObject != this.gameObject) continue;
 
             // y축으로는 회피를 못하니 2d로 계산 
-            Vector3 arrowPos2D = new Vector3(a.transform.position.x, 0f, a.transform.position.z);
-            Vector3 arrowVel2D = new Vector3(a.transform.forward.x, 0f, a.transform.forward.z) * a.BaseSpeed;
+            Vector3 arrowPos2D = new Vector3(arrow.transform.position.x, 0f, arrow.transform.position.z);
+            Vector3 arrowVel2D = new Vector3(arrow.transform.forward.x, 0f, arrow.transform.forward.z) * arrow.BaseSpeed;
 
             // 아직 먼 화살이거나 땅에 박힌 화살은 무시 
             if ((arrowPos2D - myPos2D).sqrMagnitude > detectionRadius * detectionRadius ||

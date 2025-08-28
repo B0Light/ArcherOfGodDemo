@@ -11,6 +11,7 @@ public abstract class Pool<TItem, TSelf> : Singleton<TSelf>
     [SerializeField] protected bool expandable = true;
 
     protected readonly Queue<TItem> pooledItems = new Queue<TItem>();
+    protected List<TItem> instanceItems = new List<TItem>();
 
     protected override void Awake()
     {
@@ -60,6 +61,8 @@ public abstract class Pool<TItem, TSelf> : Singleton<TSelf>
             }
             item = CreateNew();
         }
+        
+        instanceItems.Add(item);
 
         // 가져올 때 인터페이스 콜백 제공 가능 (필요 시 확장)
         return item;
@@ -72,7 +75,10 @@ public abstract class Pool<TItem, TSelf> : Singleton<TSelf>
         item.Pool_Release(item.gameObject);
         item.transform.SetParent(transform);
         pooledItems.Enqueue(item);
+        instanceItems.Remove(item);
     }
+
+    public List<TItem> GetInstanceList() => instanceItems;
 }
 
 

@@ -34,10 +34,6 @@ namespace bkTools.Combat
 		{
 			if (stats == null) TryGetComponent(out stats);
 			SetupHealthRef();
-			if (cachedHealth != null)
-			{
-				OnHealthChanged.Invoke(cachedHealth.Current);
-			}
 		}
 
 		void OnDestroy()

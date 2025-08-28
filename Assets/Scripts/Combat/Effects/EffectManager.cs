@@ -14,7 +14,8 @@ namespace bkTools.Combat
 
 		[Header("Registered Effects")]
 		[SerializeField] private List<DamageEffect> healthChangeEffects = new();
-
+		[SerializeField] private List<DamageEffect> damageEffects = new();
+		[SerializeField] private List<DamageEffect> deathEffects = new();
 		// Renderer 색상/메테리얼 캐시
 		private readonly Dictionary<Renderer, Color[]> _originalColors = new();
 		private readonly Dictionary<Renderer, int[]> _colorPropIds = new();
@@ -37,6 +38,8 @@ namespace bkTools.Combat
 			if (damageable != null)
 			{
 				damageable.OnHealthChanged.AddListener(OnHealthChanged);
+				damageable.OnDamaged.AddListener(OnDamaged);
+				damageable.OnDeath.AddListener(OnDeath);
 			}
 		}
 
@@ -44,7 +47,8 @@ namespace bkTools.Combat
 		{
 			if (damageable != null)
 			{
-				damageable.OnHealthChanged.RemoveListener(OnHealthChanged);
+				damageable.OnHealthChanged.RemoveAllListeners();
+				damageable.OnDamaged.RemoveAllListeners();
 			}
 		}
 		
@@ -56,6 +60,26 @@ namespace bkTools.Combat
 			{
 				if (effect == null) continue;
 				effect.Apply(this, currentHealth, prev, damageable);
+			}
+		}
+		
+		private void OnDamaged(float currentHealth)
+		{
+			float prev = _lastHealth;
+			_lastHealth = currentHealth;
+			foreach (var effect in damageEffects)
+			{
+				if (effect == null) continue;
+				effect.Apply(this, currentHealth, prev, damageable);
+			}
+		}
+		
+		private void OnDeath()
+		{
+			foreach (var effect in deathEffects)
+			{
+				if (effect == null) continue;
+				effect.Apply(this, 0, 0, damageable);
 			}
 		}
 
@@ -131,48 +155,7 @@ namespace bkTools.Combat
 			}
 		}
 
-		// 메테리얼 교체용 캐시 빌드
-		public void EnsureMaterialCaches(Renderer[] renderers)
-		{
-			_originalSharedMaterials.Clear();
-			foreach (var r in renderers)
-			{
-				if (r == null) continue;
-				_originalSharedMaterials[r] = r.sharedMaterials;
-			}
-		}
-
-		// 모든 서브메시에 동일한 플래시 메테리얼 적용
-		public void SetSharedMaterials(Renderer[] renderers, Material replacement)
-		{
-			if (replacement == null) return;
-			foreach (var r in renderers)
-			{
-				if (r == null) continue;
-				var src = r.sharedMaterials;
-				if (src == null || src.Length == 0)
-				{
-					r.sharedMaterial = replacement;
-					continue;
-				}
-				var arr = new Material[src.Length];
-				for (int i = 0; i < arr.Length; i++) arr[i] = replacement;
-				r.sharedMaterials = arr;
-			}
-		}
-
-		public void RestoreSharedMaterials(Renderer[] renderers)
-		{
-			foreach (var r in renderers)
-			{
-				if (r == null) continue;
-				if (!_originalSharedMaterials.TryGetValue(r, out var mats)) continue;
-				r.sharedMaterials = mats;
-			}
-		}
-
 		#endregion
-
 		
 	}
 }

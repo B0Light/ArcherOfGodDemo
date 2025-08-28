@@ -83,11 +83,6 @@ public class Arrow : MonoBehaviour, IPoolGameObject
             _rb.linearVelocity = direction.normalized * speed;
             _rb.angularVelocity = Vector3.zero;
         }
-
-        // reset telemetry when using legacy launch
-        _intendedTarget = null;
-        _intendedTargetPosition = Vector3.zero;
-        _fireOrigin = transform.position;
     }
 
     private void OnTriggerEnter(Collider other)

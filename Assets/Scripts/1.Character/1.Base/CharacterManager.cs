@@ -14,9 +14,6 @@ public class CharacterManager : MonoBehaviour
     public bool isPerformingAction = false;
     
     [SerializeField] private Transform target; 
-    private float _launchAngle = 45f;
-    
-    private readonly int _shootHash = Animator.StringToHash("Shoot");
     
     private void Awake()
     {
@@ -30,6 +27,7 @@ public class CharacterManager : MonoBehaviour
     private void Start()
     {
         SubscribeEvent();
+        PrepareAim();
         ShootTrigger();
     }
 
@@ -43,10 +41,31 @@ public class CharacterManager : MonoBehaviour
     {
         playableDirector.Play();
     }
+    
+    public void SetTimelineSpeed(double speed)
+    {
+        if (playableDirector != null)
+        {
+            playableDirector.playableGraph.GetRootPlayable(0).SetSpeed(speed);
+        }
+    }
 
     private void CloseTrigger()
     {
         playableDirector.Stop();
         playableDirector.time = 0.1f;
+    }
+
+    private void PrepareAim()
+    {
+        if (characterCombatManager != null)
+        {
+            characterCombatManager.UpdateBowAim();
+        }
+    }
+
+    public Transform GetTarget()
+    {
+        return target;
     }
 }

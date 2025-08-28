@@ -13,17 +13,6 @@ namespace bkTools.Combat
 		[SerializeField] private LayerMask hitMask = ~0;
 		[SerializeField] private bool useTrigger = true;
 
-		public void HitTarget(IDamageable target)
-		{
-			if (target == null) return;
-			target.ReceiveDamage(new DamageInfo(
-				amount: damage,
-				direction: transform.forward,
-				position: transform.position,
-				source: gameObject,
-				isCritical: critical));
-		}
-
 		void OnTriggerEnter(Collider other)
 		{
 			if (!useTrigger) return;

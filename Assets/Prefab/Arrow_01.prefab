@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9611e594a7172946ba62f326b4e2ce7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseSpeed: 40
+  baseSpeed: 100
   lifeTime: 6
   targetLayer:
     serializedVersion: 2

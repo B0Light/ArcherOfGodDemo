@@ -3,34 +3,41 @@ using UnityEngine;
 public class BowShooter : MonoBehaviour
 {
     [Header("Refs")]
-    [SerializeField] private Transform firePoint;   // 화살이 나가는 지점
-    [SerializeField] private Transform target;      // 맞출 대상 (예: 캐릭터)
+    private Transform _firePoint;   // 화살이 나가는 지점
+    private Transform _target;      
+    private float _launchAngle = 45f; // 발사 각도 (도 단위)
 
-    [Header("Shooting")]
-    [SerializeField] private float launchAngle = 45f; // 발사 각도 (도 단위)
-
+    public void SetBow(Transform newTarget, Transform muzzle)
+    {
+        _target = newTarget;
+        _firePoint = muzzle;
+    }
+    
     /* Animation Event */
     public void Shoot()
     {
-        if (ArrowPool.Instance == null || target == null) return;
+        if (ArrowPool.Instance == null || _target == null) return;
 
         var arrow = ArrowPool.Instance.Get();
         if (arrow == null) return;
+        // 발사 직전 현재 위치/타겟 기준으로 최적 각도 재계산 (가장자리 보정)
+        _launchAngle = SolveBestAngle(_firePoint.position, _target.position, _launchAngle);
 
         // 화살 위치 초기화
+        arrow.transform.SetParent(_firePoint);
+        arrow.transform.localPosition = Vector3.zero;
+        arrow.transform.localRotation = Quaternion.identity;
         arrow.transform.SetParent(null);
-        arrow.transform.position = firePoint.position;
-        arrow.transform.rotation = firePoint.rotation;
 
-        Vector3 velocity = CalculateParabolaVelocity(target.position, firePoint.position, launchAngle);
+        Vector3 velocity = CalculateParabolaVelocity(_target.position, _firePoint.position, _launchAngle);
 
         arrow.gameObject.SetActive(true);
         arrow.Launch(
             velocity.normalized,
             velocity.magnitude - arrow.BaseSpeed,
-            target,
-            target.position,
-            firePoint.position
+            _target,
+            _target.position,
+            _firePoint.position
         );
     }
 
@@ -56,8 +63,38 @@ public class BowShooter : MonoBehaviour
         return Quaternion.AngleAxis(angleBetweenObjects, Vector3.up) * velocity;
     }
 
-    public void SetTarget(Transform newTarget)
+    public void SetLaunchAngle(float newAngle)
     {
-        target = newTarget;
+        _launchAngle = newAngle;
+    }
+
+    private float SolveBestAngle(Vector3 startPos, Vector3 targetPos, float initialGuess)
+    {
+        // BowShooter.CalculateParabolaVelocity는 yOffset = start - target을 사용
+        float gravity = Mathf.Abs(Physics.gravity.y);
+        Vector3 planarStart = new Vector3(startPos.x, 0f, startPos.z);
+        Vector3 planarTarget = new Vector3(targetPos.x, 0f, targetPos.z);
+        float distance = Vector3.Distance(planarStart, planarTarget);
+        float yOffset = startPos.y - targetPos.y;
+
+        float bestAngle = Mathf.Clamp(initialGuess, 10f, 80f);
+        float bestScore = float.MaxValue;
+
+        for (int i = -10; i <= 10; i++)
+        {
+            float angle = Mathf.Clamp(bestAngle + i, 10f, 80f);
+            float rad = angle * Mathf.Deg2Rad;
+            float denom = (distance * Mathf.Tan(rad)) + yOffset;
+            if (denom <= 0.001f) continue;
+            float v = (1f / Mathf.Cos(rad)) * Mathf.Sqrt((0.5f * gravity * distance * distance) / denom);
+            if (float.IsNaN(v) || float.IsInfinity(v)) continue;
+            if (v < bestScore)
+            {
+                bestScore = v;
+                bestAngle = angle;
+            }
+        }
+
+        return bestAngle;
     }
 }
