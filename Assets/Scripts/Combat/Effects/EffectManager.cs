@@ -19,7 +19,6 @@ namespace bkTools.Combat
 		// Renderer 색상/메테리얼 캐시
 		private readonly Dictionary<Renderer, Color[]> _originalColors = new();
 		private readonly Dictionary<Renderer, int[]> _colorPropIds = new();
-		private readonly Dictionary<Renderer, Material[]> _originalSharedMaterials = new();
 
 		public Renderer[] TargetRenderers => targetRenderers;
 		private float _lastHealth = float.NaN;
@@ -81,6 +80,10 @@ namespace bkTools.Combat
 				if (effect == null) continue;
 				effect.Apply(this, 0, 0, damageable);
 			}
+
+			CharacterManager characterManager = GetComponent<CharacterManager>();
+
+			characterManager.isDead.Value = true;
 		}
 
 
@@ -153,6 +156,19 @@ namespace bkTools.Combat
 					r.SetPropertyBlock(block, i);
 				}
 			}
+		}
+
+		#endregion
+
+		#region Animation
+
+		public void PlayAnimation(string animationName)
+		{
+			CharacterAnimationManager characterAnimationManager = GetComponent<CharacterAnimationManager>();
+			
+			if(characterAnimationManager == null) return;
+			
+			characterAnimationManager.PlayTargetActionAnimation(animationName, true);
 		}
 
 		#endregion

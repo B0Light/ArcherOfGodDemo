@@ -35,6 +35,8 @@ public class CharacterManager : MonoBehaviour
     {
         characterLocomotionManager.onStop.AddListener(ShootTrigger);
         characterLocomotionManager.onMove.AddListener(CloseTrigger);
+
+        isDead.OnValueChanged += DeadProcess;
     }
 
     private void ShootTrigger()
@@ -62,6 +64,12 @@ public class CharacterManager : MonoBehaviour
         {
             characterCombatManager.UpdateBowAim();
         }
+    }
+
+    private void DeadProcess(bool value)
+    {
+        if(value == false) return;
+        CloseTrigger();
     }
 
     public Transform GetTarget()

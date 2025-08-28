@@ -6814,6 +6814,7 @@ GameObject:
   - component: {fileID: 1952247761}
   - component: {fileID: 1952247766}
   - component: {fileID: 1952247760}
+  - component: {fileID: 1952247771}
   - component: {fileID: 1952247759}
   - component: {fileID: 1952247767}
   - component: {fileID: 1952247770}
@@ -6927,7 +6928,11 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'Toes_L'\n\tTransform 'Toes_R'\n\tTransform 'Toes_L'\n\tTransform
+    'Toes_R'\n\tTransform 'Toes_L'\n\tTransform 'Toes_R'\n\tFrom animation clip 'A_POLY_BOW_Stand_Shoot_Leaping_RMV_Neut'\n\tFrom
+    animation clip 'A_POLY_BOW_Death_Head_F_Masc'"
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -7005,7 +7010,8 @@ MonoBehaviour:
   healthChangeEffects: []
   damageEffects:
   - {fileID: 11400000, guid: d65adb19cbfdef7439c410e323d587f7, type: 2}
-  deathEffects: []
+  deathEffects:
+  - {fileID: 11400000, guid: 4d3317d7b1ff78e45b9f151b72487e6d, type: 2}
 --- !u!114 &1952247769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7020,7 +7026,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stats: {fileID: 1952247770}
   healthStatId: Health
-  createIfMissing: 1
+  createIfMissing: 0
   defaultMax: 100
   defaultStart: 100
   applyKnockback: 0
@@ -7050,6 +7056,19 @@ MonoBehaviour:
   statDefinitions:
   - {fileID: 11400000, guid: c8e587d9d376fa745afba3ab40002804, type: 2}
   stats: []
+--- !u!114 &1952247771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1952247758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1de26c7393795b4dac3c9fb28cb5964, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  applyRootMotion: 0
 --- !u!1 &1960275302
 GameObject:
   m_ObjectHideFlags: 0
@@ -7290,6 +7309,7 @@ GameObject:
   - component: {fileID: 2051481490}
   - component: {fileID: 2051481489}
   - component: {fileID: 2051481487}
+  - component: {fileID: 2051481497}
   - component: {fileID: 2051481488}
   - component: {fileID: 2051481493}
   - component: {fileID: 2051481496}
@@ -7433,7 +7453,11 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'Toes_L'\n\tTransform 'Toes_R'\n\tTransform 'Toes_L'\n\tTransform
+    'Toes_R'\n\tTransform 'Toes_L'\n\tTransform 'Toes_R'\n\tFrom animation clip 'A_POLY_BOW_Stand_Shoot_Leaping_RMV_Neut'\n\tFrom
+    animation clip 'A_POLY_BOW_Death_Head_F_Masc'"
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -7488,7 +7512,8 @@ MonoBehaviour:
   healthChangeEffects: []
   damageEffects:
   - {fileID: 11400000, guid: d65adb19cbfdef7439c410e323d587f7, type: 2}
-  deathEffects: []
+  deathEffects:
+  - {fileID: 11400000, guid: 4d3317d7b1ff78e45b9f151b72487e6d, type: 2}
 --- !u!114 &2051481495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7503,7 +7528,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stats: {fileID: 2051481496}
   healthStatId: Health
-  createIfMissing: 1
+  createIfMissing: 0
   defaultMax: 100
   defaultStart: 100
   applyKnockback: 0
@@ -7533,6 +7558,19 @@ MonoBehaviour:
   statDefinitions:
   - {fileID: 11400000, guid: c8e587d9d376fa745afba3ab40002804, type: 2}
   stats: []
+--- !u!114 &2051481497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051481486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1de26c7393795b4dac3c9fb28cb5964, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  applyRootMotion: 0
 --- !u!1 &2063057522
 GameObject:
   m_ObjectHideFlags: 0
