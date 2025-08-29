@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace bkTools.Combat
 		private readonly Dictionary<Renderer, int[]> _colorPropIds = new();
 
 		public Renderer[] TargetRenderers => targetRenderers;
-		private float _lastHealth = float.NaN;
+		private float maxHealth = 100f;
 
 		void Awake()
 		{
@@ -39,6 +40,8 @@ namespace bkTools.Combat
 				damageable.OnHealthChanged.AddListener(OnHealthChanged);
 				damageable.OnDamaged.AddListener(OnDamaged);
 				damageable.OnDeath.AddListener(OnDeath);
+				
+				maxHealth = damageable.MaxHealth;
 			}
 		}
 
@@ -48,28 +51,25 @@ namespace bkTools.Combat
 			{
 				damageable.OnHealthChanged.RemoveAllListeners();
 				damageable.OnDamaged.RemoveAllListeners();
+				damageable.OnDeath.RemoveAllListeners();
 			}
 		}
 		
 		private void OnHealthChanged(float currentHealth)
 		{
-			float prev = _lastHealth;
-			_lastHealth = currentHealth;
 			foreach (var effect in healthChangeEffects)
 			{
 				if (effect == null) continue;
-				effect.Apply(this, currentHealth, prev, damageable);
+				effect.Apply(this, currentHealth, maxHealth, damageable);
 			}
 		}
 		
 		private void OnDamaged(float currentHealth)
 		{
-			float prev = _lastHealth;
-			_lastHealth = currentHealth;
 			foreach (var effect in damageEffects)
 			{
 				if (effect == null) continue;
-				effect.Apply(this, currentHealth, prev, damageable);
+				effect.Apply(this, currentHealth, maxHealth, damageable);
 			}
 		}
 		
@@ -82,8 +82,10 @@ namespace bkTools.Combat
 			}
 
 			CharacterManager characterManager = GetComponent<CharacterManager>();
-
-			characterManager.isDead.Value = true;
+			if (characterManager != null)
+			{
+				characterManager.isDead.Value = true;
+			}
 		}
 
 
@@ -169,6 +171,19 @@ namespace bkTools.Combat
 			if(characterAnimationManager == null) return;
 			
 			characterAnimationManager.PlayTargetActionAnimation(animationName, true);
+		}
+
+		#endregion
+		
+		#region DeathProcess
+
+		public void DeathProcess()
+		{
+			CharacterManager characterManager = GetComponent<CharacterManager>();
+			
+			if(characterManager == null) return;
+
+			characterManager.isDead.Value = true;
 		}
 
 		#endregion

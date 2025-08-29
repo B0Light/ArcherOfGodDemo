@@ -9,11 +9,9 @@ namespace bkTools.Combat
 	{
 		[SerializeField] private Color flashColor = Color.red;
 		[SerializeField] private float flashDuration = 1f;
-		[SerializeField] private bool onlyWhenHealthDecreases = true;
 
-		public override void Apply(EffectManager manager, float currentHealth, float previousHealth, Damageable damageable)
+		public override void Apply(EffectManager manager, float currentHealth, float maxHealth, Damageable damageable)
 		{
-			if (onlyWhenHealthDecreases && currentHealth >= previousHealth) return;
 			if (manager == null) return;
 			manager.StartCoroutine(Run(manager));
 		}

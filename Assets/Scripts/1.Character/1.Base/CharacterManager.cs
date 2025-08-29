@@ -13,8 +13,8 @@ public class CharacterManager : MonoBehaviour
     public Variable<bool> isDead = new Variable<bool>(false);
     public bool isPerformingAction = false;
     
-    [SerializeField] private Transform target; 
-    
+    [SerializeField] private Transform target;
+    private CharacterManager targetCharacterManager;
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -22,19 +22,26 @@ public class CharacterManager : MonoBehaviour
         characterLocomotionManager = GetComponent<CharacterLocomotionManager>();
         characterCombatManager = GetComponent<CharacterCombatManager>();
     }
-    
 
     private void Start()
     {
-        SubscribeEvent();
         PrepareAim();
+        SetTargetCharacterManager();
+        SubscribeEvent();
         ShootTrigger();
     }
 
+    private void SetTargetCharacterManager()
+    {
+        targetCharacterManager = target.GetComponent<CharacterManager>();
+    }
+    
     private void SubscribeEvent()
     {
         characterLocomotionManager.onStop.AddListener(ShootTrigger);
         characterLocomotionManager.onMove.AddListener(CloseTrigger);
+        
+        targetCharacterManager.isDead.OnValueChanged += b => CloseTrigger();
 
         isDead.OnValueChanged += DeadProcess;
     }

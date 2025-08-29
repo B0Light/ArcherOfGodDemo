@@ -23,9 +23,9 @@ namespace bkTools.Combat
 		[SerializeField] private float additionalLifetimePadding = 0.25f;
 		[SerializeField] private float destroyAfterSeconds = 2f;
 
-		public override void Apply(EffectManager manager, float currentHealth, float previousHealth, Damageable damageable)
+		public override void Apply(EffectManager manager, float currentHealth, float maxHealth, Damageable damageable)
 		{
-			if (onlyWhenHealthDecreases && currentHealth >= previousHealth) return;
+			if (onlyWhenHealthDecreases && currentHealth >= maxHealth) return;
 			if (manager == null) return;
 			if (effectPrefab == null) return;
 			manager.StartCoroutine(SpawnRoutine(manager, damageable));

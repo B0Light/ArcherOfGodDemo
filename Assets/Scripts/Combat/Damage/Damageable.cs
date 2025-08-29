@@ -26,14 +26,35 @@ namespace bkTools.Combat
 
 		private Stat cachedHealth;
 
-		public float MaxHealth => cachedHealth != null ? cachedHealth.Max : 0f;
+		public float MaxHealth
+		{
+			get
+			{
+				if (cachedHealth != null) return cachedHealth.Max;
+				var s = SetupHealthRef();
+				return s != null ? s.Max : defaultMax;
+			}
+		}
 		public float CurrentHealth => cachedHealth != null ? cachedHealth.Current : 0f;
 		public bool IsDead => cachedHealth != null && cachedHealth.IsEmpty;
 
 		void Awake()
 		{
 			if (stats == null) TryGetComponent(out stats);
+			// Stats 컴포넌트가 없으면(그리고 생성 옵션이 켜져 있으면) 자동으로 추가
+			if (stats == null && createIfMissing)
+			{
+				stats = gameObject.GetComponent<Stats>();
+				if (stats == null)
+				{
+					stats = gameObject.AddComponent<Stats>();
+				}
+			}
 			SetupHealthRef();
+			if (cachedHealth != null)
+			{
+				OnHealthChanged.Invoke(cachedHealth.Current);
+			}
 		}
 
 		void OnDestroy()
@@ -85,9 +106,9 @@ namespace bkTools.Combat
 			cachedHealth.Add(amount);
 		}
 
-		void SetupHealthRef()
+		Stat SetupHealthRef()
 		{
-			if (stats == null) return;
+			if (stats == null) return null;
 			if (!stats.TryGet(healthStatId, out var s))
 			{
 				if (createIfMissing)
@@ -96,16 +117,17 @@ namespace bkTools.Combat
 				}
 				else
 				{
-					return;
+					return null;
 				}
 			}
-			if (cachedHealth == s) return;
+			if (cachedHealth == s) return s;
 			if (cachedHealth != null)
 			{
 				cachedHealth.OnValueChanged.RemoveListener(HandleStatValueChanged);
 			}
 			cachedHealth = s;
 			cachedHealth.OnValueChanged.AddListener(HandleStatValueChanged);
+			return s;
 		}
 
 		void HandleStatValueChanged(float value)

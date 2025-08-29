@@ -37,7 +37,6 @@ namespace bkTools.Combat
 
 		void OnEnable()
 		{
-			// 선택: 자동 구독 (인스펙터에서 UnityEvent에 수동 바인딩해도 됨)
 			if (damageable != null)
 			{
 				_lastHealth = damageable.CurrentHealth;
