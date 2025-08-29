@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -11,6 +12,11 @@ public class CharacterCombatManager : MonoBehaviour
     private void Awake()
     {
         _characterManager = GetComponent<CharacterManager>();
+    }
+
+    private void OnEnable()
+    {
+        bowShooter.shootArrow.AddListener(AddActionPoint);
     }
 
     public void UpdateBowAim()
@@ -93,5 +99,10 @@ public class CharacterCombatManager : MonoBehaviour
             }
         }
         return bestAngle;
+    }
+
+    private void AddActionPoint()
+    {
+        _characterManager.actionPoint += 1;
     }
 }

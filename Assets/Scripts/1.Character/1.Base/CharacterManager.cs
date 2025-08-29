@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Serialization;
@@ -15,6 +16,9 @@ public class CharacterManager : MonoBehaviour
     
     [SerializeField] private Transform target;
     private CharacterManager targetCharacterManager;
+
+    public int actionPoint = 0;
+    private double _defaultSpeed = 1.0;
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -50,14 +54,6 @@ public class CharacterManager : MonoBehaviour
     {
         playableDirector.Play();
     }
-    
-    public void SetTimelineSpeed(double speed)
-    {
-        if (playableDirector != null)
-        {
-            playableDirector.playableGraph.GetRootPlayable(0).SetSpeed(speed);
-        }
-    }
 
     private void CloseTrigger()
     {
@@ -83,4 +79,35 @@ public class CharacterManager : MonoBehaviour
     {
         return target;
     }
+    
+    public void SetTimelineSpeed(double speed)
+    {
+        if (playableDirector != null)
+        {
+            playableDirector.playableGraph.GetRootPlayable(0).SetSpeed(speed);
+        }
+    }
+    
+    public IEnumerator SpeedBoostCoroutine()
+    {
+        // 원래 속도 저장
+        _defaultSpeed = playableDirector.playableGraph.GetRootPlayable(0).GetSpeed();
+
+        float duration = 5f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            // 1배속 → 2배속 으로 점진적으로 증가
+            double newSpeed = Mathf.Lerp((float)_defaultSpeed, (float)(_defaultSpeed * 5), elapsed / duration);
+            SetTimelineSpeed(newSpeed);
+            yield return null;
+        }
+
+        // 5초 뒤 원상 복구
+        SetTimelineSpeed(_defaultSpeed);
+    }
+    
+    
 }

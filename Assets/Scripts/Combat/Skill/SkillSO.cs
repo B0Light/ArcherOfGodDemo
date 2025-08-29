@@ -3,5 +3,15 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "bkTools/Skill", fileName = "Skill")]
 public class SkillSO : ScriptableObject
 {
+    public int cost = 3;
+
+    public virtual int GetValue()
+    {
+        return 0;
+    }
     
+    public virtual void UseSkill(CharacterManager characterManager)
+    {
+        
+    }
 }

@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class BowShooter : MonoBehaviour
 {
@@ -11,6 +13,8 @@ public class BowShooter : MonoBehaviour
     [SerializeField] private float _minShotInterval = 0.1f; // 중복 방지 최소 간격(sec)
     private int _lastShotFrame = -1;
     private float _lastShotTime = -999f;
+
+    public UnityEvent shootArrow;
 
     public void SetBow(Transform newTarget, Transform muzzle)
     {
@@ -50,6 +54,7 @@ public class BowShooter : MonoBehaviour
             _target.position,
             _firePoint.position
         );
+        shootArrow?.Invoke();
     }
 
     private Vector3 CalculateParabolaVelocity(Vector3 targetPos, Vector3 startPos, float angle)
