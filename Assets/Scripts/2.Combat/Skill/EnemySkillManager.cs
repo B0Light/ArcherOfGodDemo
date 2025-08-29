@@ -44,6 +44,8 @@ public class EnemySkillManager : SkillManager
 
 		Transform target = _characterManager.GetTarget();
 		if (target == null) return false;
+		var targetCm = target.GetComponent<CharacterManager>();
+		if (targetCm != null && targetCm.isDead.Value) return false;
 
 		if (_locomotion != null && _locomotion.IsMoving()) return false;
 

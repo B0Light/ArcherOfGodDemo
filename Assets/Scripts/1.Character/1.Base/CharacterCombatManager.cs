@@ -22,10 +22,13 @@ public class CharacterCombatManager : MonoBehaviour
     public void UpdateBowAim()
     {
         if (_characterManager == null || bowShooter == null) return;
+        if (_characterManager.isDead.Value) return;
         if (_characterManager.characterLocomotionManager == null) return;
 
         Transform target = _characterManager.GetTarget();
         if (target == null) return;
+        var targetCm = target.GetComponent<CharacterManager>();
+        if (targetCm != null && targetCm.isDead.Value) return;
 
         Vector3 startPos = firePoint != null ? firePoint.position : transform.position;
         Vector3 targetPos = target.position;

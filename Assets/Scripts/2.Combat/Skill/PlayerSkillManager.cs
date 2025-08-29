@@ -37,6 +37,7 @@ public class PlayerSkillManager : SkillManager
     {
         if (skill == null) return;
         if (_characterManager == null) return;
+        if (_characterManager.isDead.Value) return;
         if (_characterManager.actionPoint < skill.cost) return;
 
         var locomotion = _characterManager.characterLocomotionManager;

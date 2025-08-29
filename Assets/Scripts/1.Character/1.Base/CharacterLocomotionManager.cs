@@ -131,6 +131,9 @@ public class CharacterLocomotionManager : MonoBehaviour
             case AnimationState.Fall:
                 EnterFallState();
                 break;
+            case AnimationState.Dead:
+                EnterDeadState();
+                break;
         }
     }
     #endregion
@@ -218,6 +221,28 @@ public class CharacterLocomotionManager : MonoBehaviour
 
     private void ExitFallState() { }
 
+    private void EnterDeadState()
+    {
+        // 이동/회전 불가 및 속도 정지
+        canMove = false;
+        canRotate = false;
+        _velocity = Vector3.zero;
+
+        // 애니메이터 파라미터 업데이트
+        if (_characterManager != null && _characterManager.animator != null)
+        {
+            _characterManager.animator.SetBool(_isJumpingHash, false);
+            _characterManager.animator.SetBool(_isGroundedHash, _isGrounded);
+            _characterManager.animator.SetFloat(_moveSpeedHash, 0f);
+
+            _characterManager.CloseTrigger();
+            // Death 트리거가 있다면 사용 (없으면 무시)
+            _characterManager.animator.SetTrigger("Death");
+        }
+    }
+
+    private void ExitDeadState() { }
+
     private void ExitCurrentState()
     {
         switch (currentState)
@@ -230,6 +255,9 @@ public class CharacterLocomotionManager : MonoBehaviour
                 break;
             case AnimationState.Fall:
                 ExitFallState();
+                break;
+            case AnimationState.Dead:
+                ExitDeadState();
                 break;
         }
     }

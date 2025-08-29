@@ -8201,8 +8201,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 331a7ba529d183d4d90d8f260b3a0caf, type: 2}
   - {fileID: 11400000, guid: 627dfac7ab5caf744895c7b8d55f7e1d, type: 2}
   - {fileID: 11400000, guid: aee724b4ada35b047b711cfaafea348e, type: 2}
+  - {fileID: 11400000, guid: 39e3847027059e64d93df687a93c7167, type: 2}
   skillBtnPrefab: {fileID: 2336440841125324990, guid: 983486b4f430a9c429bc95db28fb28a9, type: 3}
   skillBtnParent: {fileID: 762836274}
+  moveLockDuration: 0.35
+  lockRotation: 1
 --- !u!1 &1960275302
 GameObject:
   m_ObjectHideFlags: 0
@@ -8793,11 +8796,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 627dfac7ab5caf744895c7b8d55f7e1d, type: 2}
   - {fileID: 11400000, guid: 86bfb869227832f44be3d7e19e1a78ec, type: 2}
   - {fileID: 11400000, guid: 331a7ba529d183d4d90d8f260b3a0caf, type: 2}
+  - {fileID: 11400000, guid: 39e3847027059e64d93df687a93c7167, type: 2}
   thinkInterval: 0.25
   castCooldown: 1.5
-  onlyCastWhenStopped: 1
-  minCastDistance: 0
-  maxCastDistance: 999
 --- !u!1 &2063057522
 GameObject:
   m_ObjectHideFlags: 0

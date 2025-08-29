@@ -11,6 +11,13 @@ public class BowShooter : MonoBehaviour
 
     public UnityEvent shootArrow;
 
+    private CharacterManager _characterManager;
+
+    private void Awake()
+    {
+        _characterManager = GetComponentInParent<CharacterManager>();
+    }
+
     public void SetBow(Transform newTarget, Transform muzzle)
     {
         _target = newTarget;
@@ -19,7 +26,10 @@ public class BowShooter : MonoBehaviour
     
     public void Shoot()
     {
+        if (_characterManager != null && _characterManager.isDead.Value) return;
         if (ArrowPool.Instance == null || _target == null || _firePoint == null) return;
+        var targetCm = _target.GetComponent<CharacterManager>();
+        if (targetCm != null && targetCm.isDead.Value) return;
         _launchAngle = SolveBestAngle(_firePoint.position, _target.position, _launchAngle);
         Vector3 velocity = CalculateParabolaVelocity(_target.position, _firePoint.position, _launchAngle);
         var arrow = CreateArrowAtMuzzle();
@@ -49,6 +59,7 @@ public class BowShooter : MonoBehaviour
     public void LaunchArrow(Arrow arrow, Vector3 velocity)
     {
         if (arrow == null) return;
+        if (_characterManager != null && _characterManager.isDead.Value) return;
         arrow.gameObject.SetActive(true);
         arrow.Launch(
             velocity.normalized,
@@ -63,6 +74,7 @@ public class BowShooter : MonoBehaviour
     public void ShootMulti(int count, float totalSpreadDegrees)
     {
         if (count <= 0) return;
+        if (_characterManager != null && _characterManager.isDead.Value) return;
         if (ArrowPool.Instance == null || _target == null || _firePoint == null) return;
         Vector3 baseVelocity = GetCalculatedVelocity();
         if (baseVelocity == Vector3.zero) return;

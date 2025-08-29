@@ -55,7 +55,7 @@ public class CharacterManager : MonoBehaviour
         playableDirector.Play();
     }
 
-    private void CloseTrigger()
+    public void CloseTrigger()
     {
         StopAllCoroutines();
         playableDirector.Stop();

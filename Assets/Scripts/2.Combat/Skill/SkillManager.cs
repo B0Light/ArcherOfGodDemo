@@ -19,6 +19,8 @@ public class SkillManager : MonoBehaviour
     
     public void UseSkill_Auto()
     {
+        if (_characterManager == null) return;
+        if (_characterManager.isDead.Value) return;
         SkillSO curSkill = SelectSkill();
         if(curSkill == null) return;
         
@@ -28,6 +30,8 @@ public class SkillManager : MonoBehaviour
     public virtual void UseSkill_Locked(SkillSO skill)
     {
         if (skill == null) return;
+        if (_characterManager == null) return;
+        if (_characterManager.isDead.Value) return;
         skill.UseSkill(_characterManager);
     }
 

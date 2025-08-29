@@ -31,9 +31,13 @@ public class SkillButtonUI : MonoBehaviour
 
     private void Update()
     {
-        if (_characterManager.actionPoint >= _skillCost && skillButton.interactable == false)
+        bool canAfford = _characterManager.actionPoint >= _skillCost;
+        bool isAlive = _characterManager != null && !_characterManager.isDead.Value;
+        bool shouldEnable = canAfford && isAlive;
+
+        if (shouldEnable && skillButton.interactable == false)
             skillButton.interactable = true;
-        if (_characterManager.actionPoint < _skillCost && skillButton.interactable == true)
+        if (!shouldEnable && skillButton.interactable == true)
             skillButton.interactable = false;
     }
 }
