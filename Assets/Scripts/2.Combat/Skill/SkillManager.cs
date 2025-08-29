@@ -5,11 +5,9 @@ using UnityEngine;
 
 public class SkillManager : MonoBehaviour
 {
-    private CharacterManager _characterManager;
+    protected CharacterManager _characterManager;
     
-    [SerializeField] private List<SkillSO> skillList = new List<SkillSO>();
-    [SerializeField] private bool isPlayer = true;
-    [ReadOnly] private readonly int _selectedSkillIndex = 0;
+    [SerializeField] protected List<SkillSO> skillList = new List<SkillSO>();
     
     private readonly Dictionary<SkillSO, float> _cooldownUntil = new();
     private List<SkillSO> _activeSkillList = new List<SkillSO>();
@@ -18,8 +16,7 @@ public class SkillManager : MonoBehaviour
     {
         _characterManager = GetComponent<CharacterManager>();
     }
-
-    [ContextMenu("UseSKILL")]
+    
     public void UseSkill_Auto()
     {
         SkillSO curSkill = SelectSkill();

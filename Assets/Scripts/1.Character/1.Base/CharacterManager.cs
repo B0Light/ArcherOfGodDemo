@@ -57,6 +57,7 @@ public class CharacterManager : MonoBehaviour
 
     private void CloseTrigger()
     {
+        StopAllCoroutines();
         playableDirector.Stop();
         playableDirector.time = 0.1f;
     }
@@ -72,6 +73,7 @@ public class CharacterManager : MonoBehaviour
     private void DeadProcess(bool value)
     {
         if(value == false) return;
+        StopAllCoroutines();
         CloseTrigger();
     }
 

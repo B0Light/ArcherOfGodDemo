@@ -5,6 +5,11 @@ public class Skill_RapidFire : SkillSO
 {
     public override void UseSkill(CharacterManager characterManager)
     {
-        characterManager.StartCoroutine(characterManager.SpeedBoostCoroutine());
+        if (characterManager.actionPoint >= cost)
+        {
+            characterManager.actionPoint -= cost;
+            characterManager.StartCoroutine(characterManager.SpeedBoostCoroutine());
+        }
+        
     }
 }
