@@ -112,7 +112,7 @@ public class CharacterCombatManager : MonoBehaviour
 
     private void AddActionPoint()
     {
-        _characterManager.actionPoint += 1;
+        _characterManager.actionPoint.Value += 1;
     }
 
     public BowShooter GetBowShooter()

@@ -8,21 +8,25 @@ public class CharacterManager : MonoBehaviour
 {
     [HideInInspector] public Animator animator;
     [HideInInspector] public PlayableDirector playableDirector;
-    
+
+    [HideInInspector] public CharacterAnimationManager characterAnimationManager;
     [HideInInspector] public CharacterLocomotionManager characterLocomotionManager;
     [HideInInspector] public CharacterCombatManager characterCombatManager;
     public Variable<bool> isDead = new Variable<bool>(false);
     public bool isPerformingAction = false;
     
     [SerializeField] private Transform target;
-    private CharacterManager targetCharacterManager;
+    private CharacterManager _targetCharacterManager;
 
-    public int actionPoint = 0;
+    public Variable<int> actionPoint = new Variable<int>(0);
     private double _defaultSpeed = 1.0;
+    
     private void Awake()
     {
         animator = GetComponent<Animator>();
         playableDirector = GetComponent<PlayableDirector>();
+
+        characterAnimationManager = GetComponent<CharacterAnimationManager>();
         characterLocomotionManager = GetComponent<CharacterLocomotionManager>();
         characterCombatManager = GetComponent<CharacterCombatManager>();
     }
@@ -35,9 +39,14 @@ public class CharacterManager : MonoBehaviour
         ShootTrigger();
     }
 
+    private void OnDisable()
+    {
+        actionPoint.ClearAllSubscribers();
+    }
+
     private void SetTargetCharacterManager()
     {
-        targetCharacterManager = target.GetComponent<CharacterManager>();
+        _targetCharacterManager = target.GetComponent<CharacterManager>();
     }
     
     private void SubscribeEvent()
@@ -45,7 +54,7 @@ public class CharacterManager : MonoBehaviour
         characterLocomotionManager.onStop.AddListener(ShootTrigger);
         characterLocomotionManager.onMove.AddListener(CloseTrigger);
         
-        targetCharacterManager.isDead.OnValueChanged += b => CloseTrigger();
+        _targetCharacterManager.isDead.OnValueChanged += b => CloseTrigger();
 
         isDead.OnValueChanged += DeadProcess;
     }
@@ -72,9 +81,9 @@ public class CharacterManager : MonoBehaviour
 
     private void DeadProcess(bool value)
     {
-        if(value == false) return;
         StopAllCoroutines();
-        CloseTrigger();
+        playableDirector.Stop();
+        characterAnimationManager.PlayTargetActionAnimation("Dead", true);
     }
 
     public Transform GetTarget()

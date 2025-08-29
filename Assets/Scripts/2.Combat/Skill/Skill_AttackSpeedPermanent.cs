@@ -16,7 +16,7 @@ public class Skill_AttackSpeedPermanent : SkillSO
 	{
 		if (characterManager == null) return;
 		if (characterManager.isDead.Value) return;
-		if (characterManager.actionPoint < cost) return;
+		if (characterManager.actionPoint.Value < cost) return;
 
 		if (characterManager.playableDirector == null) return;
 
@@ -25,7 +25,7 @@ public class Skill_AttackSpeedPermanent : SkillSO
 		double newSpeed = current * Mathf.Max(0.01f, multiplier);
 		characterManager.SetTimelineSpeed(newSpeed);
 
-		characterManager.actionPoint -= cost;
+		characterManager.actionPoint.Value -= cost;
 	}
 }
 

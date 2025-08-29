@@ -18,14 +18,14 @@ public class Skill_FirePillarArrow : SkillSO
     public override void UseSkill(CharacterManager characterManager)
     {
         if (characterManager == null) return;
-        if (characterManager.actionPoint < cost) return;
+        if (characterManager.actionPoint.Value < cost) return;
 
         var ccm = characterManager.characterCombatManager;
         if (ccm == null) return;
         var bow = ccm.GetBowShooter();
         if (bow == null) return;
 
-        characterManager.actionPoint -= cost;
+        characterManager.actionPoint.Value -= cost;
 
         var velocity = bow.GetCalculatedVelocity();
         if (velocity == Vector3.zero) return;

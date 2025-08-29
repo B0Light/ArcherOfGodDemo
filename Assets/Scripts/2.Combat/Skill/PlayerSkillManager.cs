@@ -12,16 +12,12 @@ public class PlayerSkillManager : SkillManager
     
     private void Start()
     {
-        InitBtn();
+        // 초기에는 버튼 생성 안 함. 드로우 시점에 생성
+        OnSkillDrawn += HandleSkillDrawn;
+        OnSkillUsed += HandleSkillUsed;
     }
 
-    private void InitBtn()
-    {
-        foreach (var skillSo in skillList)
-        {
-            CreateSkillBtn(skillSo);
-        }
-    }
+    private void InitBtn() { }
 
     private void CreateSkillBtn(SkillSO selectedSkill)
     {
@@ -31,6 +27,7 @@ public class PlayerSkillManager : SkillManager
         {
             skillButtonUI.Init(selectedSkill, _characterManager);
         }
+        skillBtn.name = $"SkillBtn_{selectedSkill.skillName}";
     }
 
     public override void UseSkill_Locked(SkillSO skill)
@@ -38,7 +35,8 @@ public class PlayerSkillManager : SkillManager
         if (skill == null) return;
         if (_characterManager == null) return;
         if (_characterManager.isDead.Value) return;
-        if (_characterManager.actionPoint < skill.cost) return;
+        if (_characterManager.actionPoint.Value < skill.cost) return;
+        if (!IsSkillActivated(skill)) return;
 
         var locomotion = _characterManager.characterLocomotionManager;
         bool prevMove = locomotion ? locomotion.canMove : true;
@@ -52,8 +50,28 @@ public class PlayerSkillManager : SkillManager
         }
 
         skill.UseSkill(_characterManager);
+        MarkSkillUsed(skill);
 
         _characterManager.StartCoroutine(UnlockAfterDelay(moveLockDuration, locomotion, prevMove, prevRotate));
+    }
+    private void HandleSkillDrawn(SkillSO skill)
+    {
+        CreateSkillBtn(skill);
+    }
+
+    private void HandleSkillUsed(SkillSO skill)
+    {
+        // 해당 스킬 버튼 제거
+        for (int i = 0; i < skillBtnParent.childCount; i++)
+        {
+            var child = skillBtnParent.GetChild(i);
+            var ui = child.GetComponent<SkillButtonUI>();
+            if (ui != null && ui.IsForSkill(skill))
+            {
+                Destroy(child.gameObject);
+                break;
+            }
+        }
     }
 
     private System.Collections.IEnumerator UnlockAfterDelay(float delay, CharacterLocomotionManager locomotion, bool prevMove, bool prevRotate)

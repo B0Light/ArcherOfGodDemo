@@ -17,14 +17,14 @@ public class Skill_ExplosiveArrow : SkillSO
     public override void UseSkill(CharacterManager characterManager)
     {
         if (characterManager == null) return;
-        if (characterManager.actionPoint < cost) return;
+        if (characterManager.actionPoint.Value < cost) return;
 
         var ccm = characterManager.characterCombatManager;
         if (ccm == null) return;
         var bow = ccm.GetBowShooter();
         if (bow == null) return;
 
-        characterManager.actionPoint -= cost;
+        characterManager.actionPoint.Value -= cost;
 
         // 단발 발사 후 지면 충돌 시 폭발
         var velocity = bow.GetCalculatedVelocity();

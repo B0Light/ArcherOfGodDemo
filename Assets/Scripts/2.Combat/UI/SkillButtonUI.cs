@@ -13,11 +13,13 @@ public class SkillButtonUI : MonoBehaviour
     private CharacterManager _characterManager;
     private PlayerSkillManager _playerSkillManager;
     private int _skillCost;
+    private SkillSO _skill;
     public void Init(SkillSO skill, CharacterManager caster)
     {
         _characterManager = caster;
         _playerSkillManager = caster.GetComponent<PlayerSkillManager>();
         _skillCost = skill.cost;
+        _skill = skill;
         
         icon.sprite = skill.skillIcon;
         costText.text = skill.cost.ToString();
@@ -31,13 +33,19 @@ public class SkillButtonUI : MonoBehaviour
 
     private void Update()
     {
-        bool canAfford = _characterManager.actionPoint >= _skillCost;
+        bool canAfford = _characterManager.actionPoint.Value >= _skillCost;
         bool isAlive = _characterManager != null && !_characterManager.isDead.Value;
-        bool shouldEnable = canAfford && isAlive;
+        bool isActivated = _playerSkillManager == null || _playerSkillManager.IsSkillActivated(_skill);
+        bool shouldEnable = canAfford && isAlive && isActivated;
 
         if (shouldEnable && skillButton.interactable == false)
             skillButton.interactable = true;
         if (!shouldEnable && skillButton.interactable == true)
             skillButton.interactable = false;
+    }
+
+    public bool IsForSkill(SkillSO skill)
+    {
+        return _skill == skill;
     }
 }
