@@ -8,11 +8,6 @@ public class BowShooter : MonoBehaviour
     private Transform _firePoint;   // 화살이 나가는 지점
     private Transform _target;      
     private float _launchAngle = 45f; // 발사 각도 (도 단위)
-    
-    [Header("Fire Control")]
-    [SerializeField] private float _minShotInterval = 0.1f; // 중복 방지 최소 간격(sec)
-    private int _lastShotFrame = -1;
-    private float _lastShotTime = -999f;
 
     public UnityEvent shootArrow;
 
@@ -22,19 +17,13 @@ public class BowShooter : MonoBehaviour
         _firePoint = muzzle;
     }
     
-    /* Animation Event */
     public void Shoot()
     {
-        if (_lastShotFrame == Time.frameCount) return;
-        if (Time.time - _lastShotTime < _minShotInterval) return;
-
         if (ArrowPool.Instance == null || _target == null || _firePoint == null) return;
-
-        _lastShotFrame = Time.frameCount;
-        _lastShotTime = Time.time;
 
         var arrow = ArrowPool.Instance.Get();
         if (arrow == null) return;
+        
         // 발사 직전 현재 위치/타겟 기준으로 최적 각도 재계산 (가장자리 보정)
         _launchAngle = SolveBestAngle(_firePoint.position, _target.position, _launchAngle);
 

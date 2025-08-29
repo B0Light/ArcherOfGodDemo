@@ -29,7 +29,7 @@ namespace bkTools.UI
 
 		private void UpdateUI(float current, float max)
 		{
-			Debug.Log("Current : " + current +"\n max :" + max);
+			//Debug.Log("Current : " + current +"\n max :" + max);
 			image.fillAmount = current / max;
 		}
 

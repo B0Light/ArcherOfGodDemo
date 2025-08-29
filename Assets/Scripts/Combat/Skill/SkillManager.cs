@@ -19,6 +19,7 @@ public class SkillManager : MonoBehaviour
         _characterManager = GetComponent<CharacterManager>();
     }
 
+    [ContextMenu("UseSKILL")]
     public void UseSkill_Auto()
     {
         SkillSO curSkill = SelectSkill();

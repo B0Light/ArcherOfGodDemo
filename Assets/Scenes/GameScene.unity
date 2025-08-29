@@ -2438,7 +2438,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 628951ad6101ebd4f9c57851903b4d95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _minShotInterval: 0.1
+  shootArrow:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &574341036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4277,7 +4279,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 628951ad6101ebd4f9c57851903b4d95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _minShotInterval: 0.1
+  shootArrow:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1037821394
 GameObject:
   m_ObjectHideFlags: 0
@@ -7553,6 +7557,7 @@ GameObject:
   - component: {fileID: 1952247762}
   - component: {fileID: 1952247761}
   - component: {fileID: 1952247766}
+  - component: {fileID: 1952247773}
   - component: {fileID: 1952247760}
   - component: {fileID: 1952247771}
   - component: {fileID: 1952247759}
@@ -7560,6 +7565,7 @@ GameObject:
   - component: {fileID: 1952247770}
   - component: {fileID: 1952247769}
   - component: {fileID: 1952247768}
+  - component: {fileID: 1952247772}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -7626,6 +7632,7 @@ MonoBehaviour:
     value: 0
   isPerformingAction: 0
   target: {fileID: 2051481492}
+  actionPoint: 0
 --- !u!143 &1952247761
 CharacterController:
   m_ObjectHideFlags: 0
@@ -7810,6 +7817,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   applyRootMotion: 0
+--- !u!114 &1952247772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1952247758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b048608ab7a37f346ab3e4a28f455d9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillList:
+  - {fileID: 11400000, guid: 86bfb869227832f44be3d7e19e1a78ec, type: 2}
+  isPlayer: 1
+--- !u!114 &1952247773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1952247758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: 31150a271bbe98443b08e4271983c9fe, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1952247767}
+          m_TargetAssemblyTypeName: CharacterCombatManager, Assembly-CSharp
+          m_MethodName: ShootArrow
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1960275302
 GameObject:
   m_ObjectHideFlags: 0
@@ -8085,6 +8137,7 @@ GameObject:
   - component: {fileID: 2051481491}
   - component: {fileID: 2051481490}
   - component: {fileID: 2051481489}
+  - component: {fileID: 2051481499}
   - component: {fileID: 2051481487}
   - component: {fileID: 2051481497}
   - component: {fileID: 2051481488}
@@ -8092,6 +8145,7 @@ GameObject:
   - component: {fileID: 2051481496}
   - component: {fileID: 2051481495}
   - component: {fileID: 2051481494}
+  - component: {fileID: 2051481498}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
@@ -8119,6 +8173,7 @@ MonoBehaviour:
     value: 0
   isPerformingAction: 0
   target: {fileID: 1952247763}
+  actionPoint: 0
 --- !u!114 &2051481488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8349,6 +8404,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   applyRootMotion: 0
+--- !u!114 &2051481498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051481486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b048608ab7a37f346ab3e4a28f455d9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillList:
+  - {fileID: 11400000, guid: 86bfb869227832f44be3d7e19e1a78ec, type: 2}
+  isPlayer: 1
+--- !u!114 &2051481499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051481486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: 31150a271bbe98443b08e4271983c9fe, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2051481493}
+          m_TargetAssemblyTypeName: CharacterCombatManager, Assembly-CSharp
+          m_MethodName: ShootArrow
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &2063057522
 GameObject:
   m_ObjectHideFlags: 0

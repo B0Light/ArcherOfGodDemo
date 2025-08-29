@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "bkTools/Skill", fileName = "Skill")]
+[CreateAssetMenu(menuName = "bkTools/Skill/Empty", fileName = "Skill")]
 public class SkillSO : ScriptableObject
 {
     public int cost = 3;

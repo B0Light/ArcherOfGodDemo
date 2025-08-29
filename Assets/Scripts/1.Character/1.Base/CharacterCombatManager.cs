@@ -100,6 +100,12 @@ public class CharacterCombatManager : MonoBehaviour
         }
         return bestAngle;
     }
+    
+    /* Animation Event */
+    public void ShootArrow()
+    {
+        bowShooter.Shoot();
+    }
 
     private void AddActionPoint()
     {
