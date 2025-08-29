@@ -13,6 +13,7 @@ public class Arrow : MonoBehaviour, IPoolGameObject
     private ArrowPool _pool;
     private float _despawnTime;
     private bool _stuck = false;
+    public bool IsExplosiveShot { get; set; } = false;
     
     // Telemetry for AI
     private Transform _intendedTarget;
@@ -89,6 +90,16 @@ public class Arrow : MonoBehaviour, IPoolGameObject
     {
         if (_stuck) return; 
         
+        // FirePillar/Explosion 특수 화살의 경우 지면 충돌은 이 스크립트에서 처리하지 않음
+        // (지면 히트 시 효과 스크립트가 우선 동작하도록 하기 위함)
+        if ((groundLayer.value & (1 << other.gameObject.layer)) != 0)
+        {
+            if (GetComponent<FirePillarOnGround>() != null || GetComponent<ExplosionOnGround>() != null || GetComponent<EMPPulseOnGround>() != null)
+            {
+                return;
+            }
+        }
+
         if ((targetLayer.value & (1 << other.gameObject.layer)) == 0)
         {
             return;
@@ -154,6 +165,7 @@ public class Arrow : MonoBehaviour, IPoolGameObject
     {
         CancelInvoke();
         transform.SetParent(null);
+        IsExplosiveShot = false;
 
         if (_pool != null)
         {
@@ -163,6 +175,12 @@ public class Arrow : MonoBehaviour, IPoolGameObject
         {
             gameObject.SetActive(false);
         }
+    }
+
+    public void ForceDespawn()
+    {
+        if (_stuck) return;
+        Despawn();
     }
 
     // IPoolGameObject 구현

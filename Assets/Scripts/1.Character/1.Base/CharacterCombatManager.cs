@@ -111,4 +111,9 @@ public class CharacterCombatManager : MonoBehaviour
     {
         _characterManager.actionPoint += 1;
     }
+
+    public BowShooter GetBowShooter()
+    {
+        return bowShooter;
+    }
 }

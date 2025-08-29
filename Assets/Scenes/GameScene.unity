@@ -8197,6 +8197,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillList:
   - {fileID: 11400000, guid: 86bfb869227832f44be3d7e19e1a78ec, type: 2}
+  - {fileID: 11400000, guid: 013c97360c126844f96d42c2499f44a0, type: 2}
+  - {fileID: 11400000, guid: 331a7ba529d183d4d90d8f260b3a0caf, type: 2}
+  - {fileID: 11400000, guid: 627dfac7ab5caf744895c7b8d55f7e1d, type: 2}
+  - {fileID: 11400000, guid: aee724b4ada35b047b711cfaafea348e, type: 2}
   skillBtnPrefab: {fileID: 2336440841125324990, guid: 983486b4f430a9c429bc95db28fb28a9, type: 3}
   skillBtnParent: {fileID: 762836274}
 --- !u!1 &1960275302
@@ -8482,7 +8486,7 @@ GameObject:
   - component: {fileID: 2051481496}
   - component: {fileID: 2051481495}
   - component: {fileID: 2051481494}
-  - component: {fileID: 2051481498}
+  - component: {fileID: 2051481500}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
@@ -8741,20 +8745,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   applyRootMotion: 0
---- !u!114 &2051481498
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2051481486}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b048608ab7a37f346ab3e4a28f455d9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skillList:
-  - {fileID: 11400000, guid: 86bfb869227832f44be3d7e19e1a78ec, type: 2}
 --- !u!114 &2051481499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8785,6 +8775,29 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &2051481500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051481486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58f40a5eb563d2546854567ecbe578a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillList:
+  - {fileID: 11400000, guid: aee724b4ada35b047b711cfaafea348e, type: 2}
+  - {fileID: 11400000, guid: 013c97360c126844f96d42c2499f44a0, type: 2}
+  - {fileID: 11400000, guid: 627dfac7ab5caf744895c7b8d55f7e1d, type: 2}
+  - {fileID: 11400000, guid: 86bfb869227832f44be3d7e19e1a78ec, type: 2}
+  - {fileID: 11400000, guid: 331a7ba529d183d4d90d8f260b3a0caf, type: 2}
+  thinkInterval: 0.25
+  castCooldown: 1.5
+  onlyCastWhenStopped: 1
+  minCastDistance: 0
+  maxCastDistance: 999
 --- !u!1 &2063057522
 GameObject:
   m_ObjectHideFlags: 0

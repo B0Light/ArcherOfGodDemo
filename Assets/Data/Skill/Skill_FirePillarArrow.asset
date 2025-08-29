@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3045a659de7b31543bfa1800f4de7b93, type: 3}
+  m_Name: Skill_FirePillarArrow
+  m_EditorClassIdentifier: 
+  skillName: Fire
+  skillIcon: {fileID: 0}
+  cost: 3
+  fireTrailVfx: {fileID: 7509569068035639639, guid: 3b9650445d98f5f4a846e0ba7964f4e9, type: 3}
+  firePillarVfx: {fileID: 6294508013172393196, guid: 0a98d68065a1d944796ac6744b6ed571, type: 3}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 1
+  hitMask:
+    serializedVersion: 2
+    m_Bits: 128
+  extraSpeed: 0

@@ -25,6 +25,12 @@ public class SkillManager : MonoBehaviour
         curSkill.UseSkill(_characterManager);
     }
 
+    public virtual void UseSkill_Locked(SkillSO skill)
+    {
+        if (skill == null) return;
+        skill.UseSkill(_characterManager);
+    }
+
     private SkillSO SelectSkill()
     {
         _activeSkillList.Clear();

@@ -103,18 +103,21 @@ public class CharacterLocomotionManager : MonoBehaviour
     private void SwitchState(AnimationState newState)
     {
         ExitCurrentState();
-        currentState = newState;
         EnterState(newState);
     }
     
     private void EnterState(AnimationState stateToEnter)
     {
+        if(currentState == AnimationState.Dead) return;
         if(_characterManager.isDead.Value)
         {
             SwitchState(AnimationState.Dead);
             return;
         }
 
+        
+        currentState = stateToEnter;
+        
         switch (currentState)
         {
             case AnimationState.Base:
@@ -235,7 +238,22 @@ public class CharacterLocomotionManager : MonoBehaviour
     
     private void HandleMovement()
     {
-        if (!canMove) return;
+        if (!canMove)
+        {
+            // 이동 불가로 전환 시 즉시 정지 처리
+            if (_velocity.x != 0f || _velocity.z != 0f)
+            {
+                _velocity.x = 0f;
+                _velocity.z = 0f;
+                _speed2D = 0f;
+                if (_wasMoving)
+                {
+                    onStop?.Invoke();
+                    _wasMoving = false;
+                }
+            }
+            return;
+        }
         if (_moveDirection.magnitude > 0.1f)
         {
             Vector3 targetVelocity = _moveDirection * _currentMaxSpeed;

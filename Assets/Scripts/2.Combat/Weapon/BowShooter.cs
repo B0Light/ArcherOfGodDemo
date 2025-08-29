@@ -20,30 +20,69 @@ public class BowShooter : MonoBehaviour
     public void Shoot()
     {
         if (ArrowPool.Instance == null || _target == null || _firePoint == null) return;
-
-        var arrow = ArrowPool.Instance.Get();
-        if (arrow == null) return;
-        
-        // 발사 직전 현재 위치/타겟 기준으로 최적 각도 재계산 (가장자리 보정)
         _launchAngle = SolveBestAngle(_firePoint.position, _target.position, _launchAngle);
+        Vector3 velocity = CalculateParabolaVelocity(_target.position, _firePoint.position, _launchAngle);
+        var arrow = CreateArrowAtMuzzle();
+        if (arrow == null) return;
+        LaunchArrow(arrow, velocity);
+    }
 
-        // 화살 위치 초기화
+    public Vector3 GetCalculatedVelocity()
+    {
+        if (_target == null || _firePoint == null) return Vector3.zero;
+        _launchAngle = SolveBestAngle(_firePoint.position, _target.position, _launchAngle);
+        return CalculateParabolaVelocity(_target.position, _firePoint.position, _launchAngle);
+    }
+
+    public Arrow CreateArrowAtMuzzle()
+    {
+        if (ArrowPool.Instance == null || _firePoint == null) return null;
+        var arrow = ArrowPool.Instance.Get();
+        if (arrow == null) return null;
         arrow.transform.SetParent(_firePoint);
         arrow.transform.localPosition = Vector3.zero;
         arrow.transform.localRotation = Quaternion.identity;
         arrow.transform.SetParent(null);
+        return arrow;
+    }
 
-        Vector3 velocity = CalculateParabolaVelocity(_target.position, _firePoint.position, _launchAngle);
-
+    public void LaunchArrow(Arrow arrow, Vector3 velocity)
+    {
+        if (arrow == null) return;
         arrow.gameObject.SetActive(true);
         arrow.Launch(
             velocity.normalized,
             velocity.magnitude - arrow.BaseSpeed,
             _target,
-            _target.position,
-            _firePoint.position
+            _target != null ? _target.position : arrow.transform.position + velocity * 0.1f,
+            _firePoint != null ? _firePoint.position : arrow.transform.position
         );
         shootArrow?.Invoke();
+    }
+
+    public void ShootMulti(int count, float totalSpreadDegrees)
+    {
+        if (count <= 0) return;
+        if (ArrowPool.Instance == null || _target == null || _firePoint == null) return;
+        Vector3 baseVelocity = GetCalculatedVelocity();
+        if (baseVelocity == Vector3.zero) return;
+
+        if (count == 1)
+        {
+            var single = CreateArrowAtMuzzle();
+            LaunchArrow(single, baseVelocity);
+            return;
+        }
+
+        float step = (count > 1) ? (totalSpreadDegrees / (count - 1)) : 0f;
+        float start = -totalSpreadDegrees * 0.5f;
+        for (int i = 0; i < count; i++)
+        {
+            float yaw = start + step * i;
+            Vector3 v = Quaternion.AngleAxis(yaw, Vector3.up) * baseVelocity;
+            var arrow = CreateArrowAtMuzzle();
+            LaunchArrow(arrow, v);
+        }
     }
 
     private Vector3 CalculateParabolaVelocity(Vector3 targetPos, Vector3 startPos, float angle)
