@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25b29a5a0410dc84a956bd1b4878620b, type: 3}
   m_Name: Skill_RapidFire
   m_EditorClassIdentifier: 
-  skillName: RapidFire
-  skillIcon: {fileID: 0}
+  skillName: "\uC5F0\uC18D\uC0AC\uACA9 "
+  skillIcon: {fileID: 21300000, guid: 52af8c420c30eb243b836494a1ad2b25, type: 3}
   cost: 6

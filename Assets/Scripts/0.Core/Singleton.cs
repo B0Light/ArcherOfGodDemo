@@ -10,13 +10,14 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         get
         {
+            /*
             if (_applicationIsQuitting)
             {
                 Debug.LogWarning("[Singleton] Instance '" + typeof(T) + "' is already destroyed on application quit." +
                                  " Won't create again - returning null.");
                 return null;
             }
-
+            */
             lock (_lockObject)
             {
                 if (_instance == null)
@@ -28,7 +29,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
                         GameObject singletonObject = new GameObject();
                         _instance = singletonObject.AddComponent<T>();
                         singletonObject.name = typeof(T).ToString() + " (Singleton)";
-                        DontDestroyOnLoad(singletonObject);
+                        //DontDestroyOnLoad(singletonObject);
                     }
                 }
 

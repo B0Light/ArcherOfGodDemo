@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3045a659de7b31543bfa1800f4de7b93, type: 3}
   m_Name: Skill_FirePillarArrow
   m_EditorClassIdentifier: 
-  skillName: Fire
-  skillIcon: {fileID: 0}
+  skillName: "\uBD88\uD654\uC0B4 "
+  skillIcon: {fileID: 21300000, guid: e986e5afeb1147542b9645375914fb99, type: 3}
   cost: 3
   fireTrailVfx: {fileID: 7509569068035639639, guid: 3b9650445d98f5f4a846e0ba7964f4e9, type: 3}
   firePillarVfx: {fileID: 6294508013172393196, guid: 0a98d68065a1d944796ac6744b6ed571, type: 3}

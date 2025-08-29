@@ -15,6 +15,7 @@ public class FirePillarOnGround : MonoBehaviour
     [SerializeField] private GameObject firePillarVfxPrefab;
     [SerializeField] private GameObject fireTrailVfxPrefab;
     private bool _spawned;
+    private GameObject _trailVfxInstance; 
     private readonly Collider[] _hits = new Collider[32];
 
     public void Init(GameObject vfx,GameObject trailVfx, LayerMask groundMask, LayerMask hitMask)
@@ -27,8 +28,10 @@ public class FirePillarOnGround : MonoBehaviour
 
     public void InstantFireTrail()
     {
-        if(fireTrailVfxPrefab)
-            Instantiate(fireTrailVfxPrefab, this.transform);
+        if (fireTrailVfxPrefab && _trailVfxInstance == null)
+        {
+            _trailVfxInstance = Instantiate(fireTrailVfxPrefab, this.transform);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -49,14 +52,19 @@ public class FirePillarOnGround : MonoBehaviour
             vfxInstance = Instantiate(firePillarVfxPrefab, position, Quaternion.identity);
         }
 
-        // 불기둥 소환 직후 화살은 풀로 반환하여 중복 충돌/소멸을 방지
+        // 화살 제거 전에 트레일도 함께 제거
+        if (_trailVfxInstance != null)
+        {
+            Destroy(_trailVfxInstance);
+            _trailVfxInstance = null;
+        }
+
         var arrow = GetComponent<Arrow>();
         if (arrow != null)
         {
             arrow.ForceDespawn();
         }
 
-        // 틱 데미지는 VFX 오브젝트에 부착된 별도 컴포넌트가 담당
         if (vfxInstance != null)
         {
             var area = vfxInstance.GetComponent<FirePillarAreaDamage>();
@@ -64,8 +72,6 @@ public class FirePillarOnGround : MonoBehaviour
             area.Init(radius, dps, duration, tickInterval, _hitMask);
             area.StartDamage(position);
         }
-
-        // VFX 수명 관리는 FirePillarAreaDamage에서 수행
     }
 
     private static bool IsInLayerMask(int layer, LayerMask mask)

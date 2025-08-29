@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d66802ab0a0f3ca4499026c9cf4cc75d, type: 3}
   m_Name: Skill_SplitArrow
   m_EditorClassIdentifier: 
-  skillName: SplitArrow
-  skillIcon: {fileID: 0}
+  skillName: "\uAC08\uB798\uD654\uC0B4 "
+  skillIcon: {fileID: 21300000, guid: d7b2d5be69faa8c409587d7ef4eb2bcf, type: 3}
   cost: 3
   arrowCount: 5
   spreadDegrees: 25

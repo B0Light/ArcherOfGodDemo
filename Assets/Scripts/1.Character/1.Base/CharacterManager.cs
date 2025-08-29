@@ -16,7 +16,7 @@ public class CharacterManager : MonoBehaviour
     public bool isPerformingAction = false;
     
     [SerializeField] private Transform target;
-    private CharacterManager _targetCharacterManager;
+    protected CharacterManager targetCharacterManager;
 
     public Variable<int> actionPoint = new Variable<int>(0);
     private double _defaultSpeed = 1.0;
@@ -46,22 +46,23 @@ public class CharacterManager : MonoBehaviour
 
     private void SetTargetCharacterManager()
     {
-        _targetCharacterManager = target.GetComponent<CharacterManager>();
+        targetCharacterManager = target.GetComponent<CharacterManager>();
     }
     
-    private void SubscribeEvent()
+    protected virtual void SubscribeEvent()
     {
         characterLocomotionManager.onStop.AddListener(ShootTrigger);
         characterLocomotionManager.onMove.AddListener(CloseTrigger);
         
-        _targetCharacterManager.isDead.OnValueChanged += b => CloseTrigger();
+        targetCharacterManager.isDead.OnValueChanged += b => CloseTrigger();
 
         isDead.OnValueChanged += DeadProcess;
-        isDead.OnValueChanged += HandleBanner;
+        
     }
 
     private void ShootTrigger()
     {
+        playableDirector.enabled = true;
         playableDirector.Play();
     }
 
@@ -69,7 +70,7 @@ public class CharacterManager : MonoBehaviour
     {
         StopAllCoroutines();
         playableDirector.Stop();
-        playableDirector.time = 0.1f;
+        playableDirector.enabled = false;
     }
 
     private void PrepareAim()
@@ -85,22 +86,6 @@ public class CharacterManager : MonoBehaviour
         StopAllCoroutines();
         playableDirector.enabled = false;
         characterAnimationManager.PlayTargetActionAnimation("Dead", true);
-    }
-
-    private void HandleBanner(bool value)
-    {
-        if (value == false) return;
-        var ui = FindFirstObjectByType<VictoryDefeatUI>();
-        if (ui == null) return;
-        // 본인이 죽은 경우 패배, 타겟이 죽은 경우 승리
-        if (_targetCharacterManager != null && _targetCharacterManager.isDead.Value)
-        {
-            ui.ShowVictory(3f);
-        }
-        else
-        {
-            ui.ShowDefeat(3f);
-        }
     }
 
     public Transform GetTarget()

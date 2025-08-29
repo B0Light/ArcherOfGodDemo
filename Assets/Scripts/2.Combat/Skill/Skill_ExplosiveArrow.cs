@@ -9,6 +9,7 @@ public class Skill_ExplosiveArrow : SkillSO
     
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private LayerMask hitMask;
+    
     public override int GetValue()
     {
         return 3; // 간단한 우선순위 값
